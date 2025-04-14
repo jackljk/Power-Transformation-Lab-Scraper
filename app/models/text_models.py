@@ -1,6 +1,5 @@
-from pydantic import BaseModel, AnyUrl
+from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
-
 
 class Citation(BaseModel):
     """Model for storing citation information from scraped content"""
@@ -17,10 +16,3 @@ class ScrapedResult(BaseModel):
     format_type: str  # Can be 'json', 'text', 'structured', etc.
     prompt: str
     url: str
-
-
-class ScrapeRequest(BaseModel):
-    """Model for the scrape request"""
-    url: AnyUrl
-    prompt: str
-    additional_context: Optional[Dict[str, Any]] = None
