@@ -7,11 +7,29 @@ services:
       - ./:/app
       # Ensure the config directory is properly mounted
       - ./app/config:/app/app/config
+      # Mount results directory for output files
+      - ./results:/app/results
+    # Development mode with interactive shell
     entrypoint: bash
     stdin_open: true  # Keep STDIN open
     tty: true         # Allocate a pseudo-TTY
     environment:
       - PYTHONPATH=/app
+      # Optional environment variables that can override config settings
+      - BROWSER_HEADLESS=true
+      - DEBUG_MODE=false
     ports:
       - "8000:8000"  # Example port mapping
     command: -c "pip install -e . && bash"  # Install package in editable mode and start bash
+
+  # Production-like service that just runs the scraper with default config
+  scraper:
+    build: .
+    volumes:
+      - ./app/config:/app/app/config
+      - ./results:/app/results
+    environment:
+      - PYTHONPATH=/app
+    # Uses the Dockerfile's default entrypoint (python -m app.main)
+    # Can be run with: docker-compose -f docker-compose.dev.yml run scraper
+    # Or with custom config: docker-compose -f docker-compose.dev.yml run scraper custom_config.yaml

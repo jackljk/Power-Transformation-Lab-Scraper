@@ -9,7 +9,8 @@ An AI-powered web scraper built with browser-use that extracts information from 
 - **Format Flexibility**: Automatically determines the best format for returning extracted data
 - **Task Templates**: Multiple task templates for different extraction needs (summary, detailed, Q&A)
 - **AI-powered**: Uses browser-use to understand and navigate web pages
-- **Command-line Interface**: Easy-to-use CLI for quick scraping tasks
+- **Configuration System**: Flexible YAML-based configuration system
+- **Output Options**: Save results to files or display in console
 
 ## Installation
 
@@ -42,59 +43,52 @@ An AI-powered web scraper built with browser-use that extracts information from 
    playwright install chromium
    ```
 
-5. Create a `.env` file based on the provided `.env.example`:
+5. Set up configuration:
    ```bash
-   cp .env.example .env
+   cp app/config/secrets-example.yaml app/config/secrets.yaml
+   # Edit secrets.yaml with your API keys and credentials
    ```
 
 ## Usage
 
-### Command-line Interface
+### Using Configuration Files
 
-The scraper can be run from the command line:
+The scraper is configured using YAML files in the `app/config` directory:
 
-```bash
-python -m app.main --url "https://example.com" --prompt "Extract information about product pricing"
-```
+1. Edit the `app/config/local.yaml` file with your scraping parameters:
+   ```yaml
+   scraper:
+     url: "https://example.com"
+     prompt: "Extract information about product pricing"
+     output_path: "results/output.json"  # Optional
+     task_template: "default"  # Optional (default, summary, detailed, qa)
+     context:  # Optional
+       format: "json"  
+       value: '{"time_period": "last 6 months"}'
+   ```
 
-#### Command-line Options
+2. Run the scraper:
+   ```bash
+   python -m app.main
+   ```
 
-- `--url` or `-u`: The URL to scrape (required)
-- `--prompt` or `-p`: The information to extract (required)
-- `--context` or `-c`: Additional context to help guide the extraction (optional, can be JSON)
-- `--output` or `-o`: Output file path (optional, defaults to console output)
-- `--template` or `-t`: Task template to use (optional, defaults to "default")
+3. You can also specify an alternative config file:
+   ```bash
+   python -m app.main my_custom_config.yaml
+   ```
 
 ### Task Templates
 
 The scraper supports multiple task templates for different extraction needs:
 
 - `default`: General-purpose information extraction with citations
-- `summary`: Create a concise summary with key points
-- `detailed`: Extract comprehensive, hierarchical information
-- `qa`: Answer questions directly from webpage content
-
-Example using a specific template:
-```bash
-python -m app.main --url "https://example.com/about" --prompt "What is the company's mission?" --template "qa"
-```
+- `summary`: Create a concise summary with key points (WIP)
+- `detailed`: Extract comprehensive, hierarchical information (WIP)
+- `qa`: Answer questions directly from webpage content (WIP)
 
 ### Examples
 
-Extract product pricing information and print to console:
-```bash
-python -m app.main --url "https://example.com/products" --prompt "Extract all product prices and their names"
-```
-
-Extract company information and save to a file:
-```bash
-python -m app.main --url "https://example.com/about" --prompt "Extract company history and key milestones" --output "company_info.json"
-```
-
-Provide additional context for better extraction:
-```bash
-python -m app.main --url "https://example.com/blog" --prompt "Find articles about machine learning" --context '{"time_period": "last 6 months", "focus_area": "computer vision"}'
-```
+(WIP)
 
 ### Docker Usage
 
@@ -105,7 +99,7 @@ python -m app.main --url "https://example.com/blog" --prompt "Find articles abou
 
 2. Run the container:
    ```bash
-   docker run --env-file .env power-scraper --url "https://example.com" --prompt "Extract product information"
+   docker-compose -f docker-compose.dev.yml up
    ```
 
 ## How It Works
@@ -128,13 +122,48 @@ Each piece of extracted information includes:
 
 This ensures that the information extracted is 100% verifiable and accurate.
 
-## Configuration
+## Configuration System
 
-You can configure the scraper using environment variables in the `.env` file:
+The scraper uses a hierarchical configuration system:
+
+- `agent_config.yaml`: AI agent configuration
+- `browser_config.yaml`: Browser automation settings
+- `llm_config.yaml`: Language model parameters
+- `local.yaml`: User-specific scraping parameters
+- `secrets.yaml`: API keys and credentials (not committed to Git)
+
+### Environment Variables
+
+You can also configure the scraper using environment variables:
 
 - `BROWSER_HEADLESS`: Whether to run the browser in headless mode (default: `true`)
 - `BROWSER_TIMEOUT`: Browser timeout in milliseconds (default: `30000`)
 - `DEBUG_MODE`: Enable debug logging (default: `false`)
+
+## Project Structure
+
+```
+app/
+├── config/           # Configuration files
+│   ├── agent_config.yaml
+│   ├── browser_config.yaml
+│   ├── llm_config.yaml
+│   ├── local.yaml
+│   └── secrets.yaml
+├── models/           # Data models
+│   ├── llm_models.py
+│   ├── output_format_models.py
+│   ├── tasks_models.py
+│   └── text_models.py
+├── services/         # Core functionality
+│   └── scraper.py    # Main scraper implementation
+├── utils/            # Utility functions
+│   ├── brower_use.py
+│   ├── config_manager.py
+│   ├── config.py
+│   └── task_config.py
+└── main.py           # Entry point
+```
 
 ## License
 
