@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./:/app
+      # Ensure the config directory is properly mounted
+      - ./app/config:/app/app/config
+    entrypoint: bash
+    stdin_open: true  # Keep STDIN open
+    tty: true         # Allocate a pseudo-TTY
+    environment:
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"  # Example port mapping
+    command: -c "pip install -e . && bash"  # Install package in editable mode and start bash
