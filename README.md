@@ -7,6 +7,7 @@ An AI-powered web scraper built with browser-use that extracts information from 
 - **Prompt-based Scraping**: Simply provide a URL and describe what information you want to extract
 - **Citation Verification**: All extracted information includes citations to verify accuracy
 - **Format Flexibility**: Automatically determines the best format for returning extracted data
+- **Task Templates**: Multiple task templates for different extraction needs (summary, detailed, Q&A)
 - **AI-powered**: Uses browser-use to understand and navigate web pages
 - **Command-line Interface**: Easy-to-use CLI for quick scraping tasks
 
@@ -62,6 +63,21 @@ python -m app.main --url "https://example.com" --prompt "Extract information abo
 - `--prompt` or `-p`: The information to extract (required)
 - `--context` or `-c`: Additional context to help guide the extraction (optional, can be JSON)
 - `--output` or `-o`: Output file path (optional, defaults to console output)
+- `--template` or `-t`: Task template to use (optional, defaults to "default")
+
+### Task Templates
+
+The scraper supports multiple task templates for different extraction needs:
+
+- `default`: General-purpose information extraction with citations
+- `summary`: Create a concise summary with key points
+- `detailed`: Extract comprehensive, hierarchical information
+- `qa`: Answer questions directly from webpage content
+
+Example using a specific template:
+```bash
+python -m app.main --url "https://example.com/about" --prompt "What is the company's mission?" --template "qa"
+```
 
 ### Examples
 
