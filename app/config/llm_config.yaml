@@ -1,0 +1,23 @@
+# Config for LLMs
+
+llm:
+  # The provider for the LLM
+  provider: "google" # Options: openai, azure, anthropic,, ollama, google, deepseek
+  # The LLM model to use
+  model: "gemini-2.0-flash"
+
+hyperparameters:
+  # The temperature for the LLM
+  temperature: 0.7
+  # The maximum number of tokens to generate
+  max_tokens: 150
+  # The top_p for nucleus sampling
+  top_p: 1.0
+  # The frequency penalty for the LLM
+  frequency_penalty: 0.0
+  # The presence penalty for the LLM
+  presence_penalty: 0.0
+
+
+# NOTE:
+# Deepseek provider is OpenAI

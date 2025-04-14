@@ -1,0 +1,30 @@
+# Browser Configuration Settings
+# --------------------------
+
+# Main browser settings
+browser:
+  # Whether to run the browser in headless mode
+  headless: true
+  
+  # Page load timing configurations (in seconds)
+  wait_times:
+    min_page_load: 1
+    max_page_load: 5
+    timeout: 300  # General timeout for browser operations
+  
+  # Browser window display settings
+  window:
+    width: 1920
+    height: 1080
+  
+  # Debug and visualization settings
+  debug:
+    highlight_elements: true
+  
+  # Recording and tracing paths (optional) Null values indicate don't save/record
+  recordings:
+    save_path: null #"/app/recordings"
+    trace_path: null #"/app/traces"
+
+# Application-wide settings (moved from .env)
+debug_mode: false

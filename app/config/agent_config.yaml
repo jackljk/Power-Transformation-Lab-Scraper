@@ -1,0 +1,10 @@
+# Agent Configuration
+# --------------------------
+
+# Main agent settings
+agent:
+  use_vision: false  # Whether to use vision-based agent (Can be expensive) disable for text-based only agent or save cost with vision agents (e.g GPT-4o)
+  save_conversation_path: null  # null mean don't save, otherwise save to the specified path
+
+agent_run:
+  max_steps: 100 # Maximum number of steps for the agent to run (prevent infinite loops and allows for control over the agent's execution time)

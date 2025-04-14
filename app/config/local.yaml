@@ -1,0 +1,24 @@
+# Local Scraper Configuration
+# --------------------------
+
+# Scraper parameters
+scraper:
+  # URL to scrape
+  url: "https://example.com"
+  
+  # Information to extract
+  prompt: "Extract information about this website"
+  
+  # Additional context to help with scraping
+  context:
+    format: "json"  # or "text"
+    value: null  # JSON string or plain text
+  
+  # Output file path (null means print to console)
+  output_path: null
+  
+  # Task template to use
+  task_template: "default"
+  
+  # Optional config file override (for when you need to specify a different config)
+  config_override: null
