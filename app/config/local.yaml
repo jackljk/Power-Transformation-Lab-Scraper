@@ -15,7 +15,7 @@ scraper:
     value: null  # JSON string or plain text
   
   # Output file path (null means print to console)
-  output_path: null
+  output_path: /results/test.json
   
   # Task template to use
   task_template: "default"

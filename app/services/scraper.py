@@ -7,7 +7,7 @@ from browser_use import Agent, Controller
 
 from app.models.text_models import Citation as TextCitation, ScrapedResult
 from app.models.tasks_models import Task
-from app.models.output_format_models import ScraperOutput
+from app.models.output_format_models import ScraperOutput, ScraperOutputList
 from app.utils.brower_use import define_browser_use_config
 from app.models.llm_models import get_llm_instance
 from app.utils.config import RUN_MAX_STEPS
@@ -76,14 +76,17 @@ class WebScraper:
         
         if result:
             # Parse the result using our Pydantic model
-            structured_output = ScraperOutput.model_validate_json(result)
+            parsed: ScraperOutputList = ScraperOutputList.model_validate_json(result)
+                
+            # add json to result_dict
+            result_dict = parsed.model_dump()
+            
+            # add template information to result_dict
+            result_dict["task_template"] = self.task_template
             
             # Convert to the application's expected ScrapedResult format
-            processed_result = self._convert_to_scraped_result(structured_output)
-            
-            # Add template info to the result
-            result_dict = processed_result.model_dump()
-            result_dict["task_template"] = self.task_template
+            # processed_result = self._convert_to_scraped_result(structured_output)
+
             
             return result_dict
         else:

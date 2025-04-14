@@ -31,3 +31,10 @@ class ScraperOutput(BaseModel):
         None, 
         description="Brief summary of the information found"
     )
+    
+class ScraperOutputList(BaseModel):
+    """
+    Model representing a list of ScraperOutput objects.
+    This is used to handle multiple outputs from the scraper.
+    """
+    outputs: List[ScraperOutput]
