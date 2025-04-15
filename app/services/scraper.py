@@ -5,12 +5,12 @@ import json
 # Import browser-use for web scraping with AI
 from browser_use import Agent, Controller
 
-from app.models.text_models import Citation as TextCitation, ScrapedResult
-from app.models.tasks_models import Task
-from app.models.output_format_models import ScraperOutput, ScraperOutputList
-from app.utils.browser_use_config import define_browser_use_context
-from app.models.llm_models import get_llm_instance
-from app.utils.config import RUN_MAX_STEPS
+from models.text_models import Citation as TextCitation, ScrapedResult
+from models.tasks_models import Task
+from models.output_format_models import ScraperOutput, ScraperOutputList
+from utils.browser_use_config import define_browser_use_context_config
+from models.llm_models import get_llm_instance
+from utils.config import RUN_MAX_STEPS
 
 
 class WebScraper:
@@ -46,7 +46,7 @@ class WebScraper:
         self.llm = get_llm_instance()
         
         # create a browser-use browser config object
-        self.browser_context = define_browser_use_context()
+        self.browser_context, self.browser_config = define_browser_use_context_config()
         
         # Create a controller with our output model
         self.controller = Controller(output_model=ScraperOutput)
@@ -76,18 +76,31 @@ class WebScraper:
         
         if result:
             # Parse the result using our Pydantic model
-            parsed: ScraperOutputList = ScraperOutputList.model_validate_json(result)
+            try:
+                # First try to parse as is (might already be a list)
+                parsed: ScraperOutputList = ScraperOutputList.model_validate_json(result)
+            except Exception as e:
+                # If direct parsing fails, try wrapping the result in an outputs list
+                try:
+                    result_obj = json.loads(result)
+                    # Wrap the single result in an outputs list
+                    wrapped_result = {"outputs": [result_obj]}
+                    # Convert back to JSON string
+                    result_json = json.dumps(wrapped_result)
+                    # Try parsing the wrapped result
+                    parsed: ScraperOutputList = ScraperOutputList.model_validate_json(result_json)
+                except Exception as inner_e:
+                    # If both approaches fail, raise the original error
+                    raise e
                 
             # add json to result_dict
             result_dict = parsed.model_dump()
             
             # add template information to result_dict
-            
             result_dict["task_template"] = self.task_template
             
             # Convert to the application's expected ScrapedResult format
             # processed_result = self._convert_to_scraped_result(structured_output)
-
             
             return result_dict
         else:

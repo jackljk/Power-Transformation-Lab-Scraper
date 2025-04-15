@@ -4,7 +4,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
 from langchain_anthropic import ChatAnthropic
 
-from app.utils.config import get_llm_config
+from utils.config import get_llm_config
 
 LLM_CONFIG = get_llm_config()
 

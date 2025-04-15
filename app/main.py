@@ -6,10 +6,10 @@ from typing import Dict, Any, Optional
 import sys
 from pathlib import Path
 
-from app.services.scraper import WebScraper
-from app.utils.config import DEBUG_MODE
-from app.utils.config_manager import config_manager
-from app.models.tasks_models import Task
+from services.scraper import WebScraper
+from utils.config import DEBUG_MODE
+from utils.config_manager import config_manager
+from models.tasks_models import Task
 
 # Configure logging
 logging.basicConfig(
@@ -113,8 +113,15 @@ async def main():
     # Output the result
     output_path = config_manager.get("local.scraper.output_path")
     if output_path:
+        # Handle relative paths by resolving them relative to the script location
+        if not os.path.isabs(output_path):
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            output_path = os.path.normpath(os.path.join(script_dir, output_path))
+        
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        
+        # Write results to file
         with open(output_path, 'w') as f:
             f.write(formatted_result)
         logger.info(f"Results saved to {output_path}")

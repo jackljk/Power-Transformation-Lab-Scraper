@@ -13,23 +13,26 @@ services:
     entrypoint: bash
     stdin_open: true  # Keep STDIN open
     tty: true         # Allocate a pseudo-TTY
+    ipc: host         # Add IPC host setting for Chrome
     environment:
       - PYTHONPATH=/app
-      # Optional environment variables that can override config settings
-      - BROWSER_HEADLESS=true
-      - DEBUG_MODE=false
+      - BROWSER_USE_LOGGING_LEVEL=debug
+      - DISPLAY=:99    # Set display for Xvfb
     ports:
-      - "8000:8000"  # Example port mapping
+      - '5900:5900'  # VNC port for viewing the browser
     command: -c "pip install -e . && bash"  # Install package in editable mode and start bash
 
   # Production-like service that just runs the scraper with default config
   scraper:
     build: .
     volumes:
+      - ./:/app      # Mount full app directory
       - ./app/config:/app/app/config
       - ./results:/app/results
     environment:
       - PYTHONPATH=/app
+      - DISPLAY=:99    # Set display for Xvfb
+    ipc: host         # Add IPC host setting for Chrome
     # Uses the Dockerfile's default entrypoint (python -m app.main)
     # Can be run with: docker-compose -f docker-compose.dev.yml run scraper
     # Or with custom config: docker-compose -f docker-compose.dev.yml run scraper custom_config.yaml

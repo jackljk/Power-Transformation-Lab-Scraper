@@ -4,7 +4,7 @@
 # Main browser settings
 browser:
   # Whether to run the browser in headless mode
-  headless: true
+  headless: false
   
   # Page load timing configurations (in seconds)
   wait_times:

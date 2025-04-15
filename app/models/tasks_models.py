@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List, Union, Type
-from app.utils.task_config import get_task_template, get_available_templates
+from utils.task_config import get_task_template, get_available_templates
 
 
 class Task(BaseModel):

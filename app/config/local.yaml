@@ -15,7 +15,7 @@ scraper:
     value: "Flag which film won the award and extract all relevant information for each film on the list."  # JSON string or plain text
   
   # Output file path (null means print to console)
-  output_path: /results/test.json
+  output_path: "../results/test.json"  # Changed to a relative path
   
   # Task template to use
   task_template: "default"

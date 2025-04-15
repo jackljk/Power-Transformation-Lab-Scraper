@@ -3,7 +3,7 @@ Configuration file for defining scraping task templates.
 This allows for easy selection of different task formats for the scraper.
 """
 from typing import Dict, Any
-from app.models.output_format_models import ScraperOutput
+from models.output_format_models import ScraperOutput
 
 # Dictionary of predefined task templates
 TASK_TEMPLATES = {
