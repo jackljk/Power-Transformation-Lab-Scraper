@@ -32,7 +32,7 @@ def get_llm_instance() -> Any:
     
     # Common parameters for all providers
     params = {
-        "model_name": LLM_CONFIG["model"],
+        "model": LLM_CONFIG["model"],
         "temperature": LLM_CONFIG["temperature"],
     }
     

@@ -4,15 +4,15 @@
 # Scraper parameters
 scraper:
   # URL to scrape
-  url: "https://example.com"
+  url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
   
   # Information to extract
-  prompt: "Extract information about this website"
+  prompt: "Extract the list of all nommanies for Academy Award films in 2015 from the Wikipedia page."
   
   # Additional context to help with scraping
   context:
-    format: "json"  # or "text"
-    value: null  # JSON string or plain text
+    format: "text"  # or "text"
+    value: "Flag which film won the award and extract all relevant information for each film on the list."  # JSON string or plain text
   
   # Output file path (null means print to console)
   output_path: /results/test.json

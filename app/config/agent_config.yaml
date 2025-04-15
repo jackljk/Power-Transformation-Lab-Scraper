@@ -7,4 +7,4 @@ agent:
   save_conversation_path: null  # null mean don't save, otherwise save to the specified path
 
 agent_run:
-  max_steps: 100 # Maximum number of steps for the agent to run (prevent infinite loops and allows for control over the agent's execution time)
+  max_steps: 10 # Maximum number of steps for the agent to run (prevent infinite loops and allows for control over the agent's execution time)
