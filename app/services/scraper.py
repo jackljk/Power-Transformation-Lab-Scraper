@@ -82,6 +82,7 @@ class WebScraper:
             result_dict = parsed.model_dump()
             
             # add template information to result_dict
+            
             result_dict["task_template"] = self.task_template
             
             # Convert to the application's expected ScrapedResult format
