@@ -1,5 +1,14 @@
 import os
 from .config_manager import config_manager
+import sys
+from pathlib import Path
+import logging
+import json
+
+from models.tasks_models import Task
+
+logger = logging.getLogger(__name__)
+
 
 ###################################################################################
 # Browser-use Agent configuration
@@ -134,6 +143,103 @@ def get_llm_config():
         raise ValueError(f"Unsupported LLM provider: {LLM_PROVIDER}")
     
     return config
+
+
+####################################################################################
+# Local configuration
+####################################################################################
+def load_custom_config() -> bool:
+    """
+    Load a custom configuration file specified as a command-line argument.
+    
+    Returns:
+        bool: True if custom config was loaded successfully, False otherwise
+    """
+    if len(sys.argv) > 1 and sys.argv[1].endswith('.yaml'):
+        config_override = sys.argv[1]
+        config_path = Path(config_override)
+        if config_path.exists():
+            logger.info(f"Loading config override: {config_override}")
+            config_manager.load_specific_config("local", str(config_path))
+            return True
+        else:
+            logger.error(f"Config file not found: {config_override}")
+            return False
+    return True  # No custom config specified, continue with default
+
+def parse_local_config():
+    """
+    Parse the local configuration file and set up the environment accordingly.
+    
+    Returns:
+        None
+    """
+    url = config_manager.get("local.scraper.url")
+    prompt = config_manager.get("local.scraper.prompt")
+    
+    # Validate required configuration
+    if not url:
+        logger.error("URL is required in configuration (local.scraper.url)")
+        return
+    
+    if not prompt:
+        logger.error("Prompt is required in configuration (local.scraper.prompt)")
+        return
+    
+    # handle additional context if provided
+    additional_context = None
+    context_config = config_manager.get("local.scraper.context", {})
+    if context_config and context_config.get("value"):
+        context_format = context_config.get("format")
+        context_value = context_config.get("value")
+        
+        if context_format == "json":
+            try:
+                additional_context = json.loads(context_value)
+                # put the json into a string with newlines between each key-value pair in the format "key: value\n" 
+                additional_context = "\n".join([f"{k}: {v}" for k, v in additional_context.items()])
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse context as JSON. Using as plain text.")
+                additional_context = context_value
+        else:
+            additional_context = context_value
+            
+    # handle inital actions if provided
+    initial_actions = config_manager.get("local.scraper.initial_actions", [])
+    if initial_actions:
+        parsed_initial_actions = []
+        for action, value in initial_actions:
+            if 'scroll' in action:
+                parsed_initial_actions.append({action: {"amount": value}})
+            elif 'go_to_url' == action:
+                parsed_initial_actions.append({action: {"url": value}})
+            else:
+                logger.warning(f"Unknown action: {action}. Skipping.")
+                continue
+        initial_actions = parsed_initial_actions
+            
+    # Set the task template
+    available_templates = Task.get_available_templates()
+    task_template = config_manager.get("local.scraper.task_template", "default")
+    
+    if task_template not in available_templates:
+        logger.warning(f"Invalid template: {task_template}. Using default template instead.")
+        task_template = "default"
+        
+    # return all configuration values
+    return {
+        "url": url,
+        "prompt": prompt,
+        "additional_context": additional_context,
+        "task_template": task_template,
+        "initial_actions": initial_actions,
+        "output_path": config_manager.get("local.scraper.output_path"),
+        "debug_mode": DEBUG_MODE,
+    }
+        
+    
+
+
 
 # Function to reload all configurations
 def reload_config():

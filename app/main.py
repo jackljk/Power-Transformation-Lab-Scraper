@@ -7,9 +7,8 @@ import sys
 from pathlib import Path
 
 from services.scraper import WebScraper
-from utils.config import DEBUG_MODE
+from utils.config import DEBUG_MODE, load_custom_config, parse_local_config
 from utils.config_manager import config_manager
-from models.tasks_models import Task
 
 # Configure logging
 logging.basicConfig(
@@ -48,70 +47,26 @@ async def scrape_url(url: str, prompt: str, additional_context: Optional[Dict[st
 
 
 async def main():
-    # Check for custom config file specified as command-line argument
-    # This is a minimal fallback for when you need to specify a different config
-    if len(sys.argv) > 1 and sys.argv[1].endswith('.yaml'):
-        config_override = sys.argv[1]
-        config_path = Path(config_override)
-        if config_path.exists():
-            logger.info(f"Loading config override: {config_override}")
-            config_manager.load_specific_config("local", str(config_path))
-        else:
-            logger.error(f"Config file not found: {config_override}")
-            return
-    
-    # Get scraper parameters from configuration - now using local.yaml
-    url = config_manager.get("local.scraper.url")
-    prompt = config_manager.get("local.scraper.prompt")
-    
-    # Validate required configuration
-    if not url:
-        logger.error("URL is required in configuration (local.scraper.url)")
+    # Call the function at the start of main
+    if not load_custom_config():
         return
     
-    if not prompt:
-        logger.error("Prompt is required in configuration (local.scraper.prompt)")
-        return
-    
-    # Parse additional context if provided
-    additional_context = None
-    context_config = config_manager.get("local.scraper.context", {})
-    
-    if context_config and context_config.get("value"):
-        context_format = context_config.get("format", "json")
-        context_value = context_config.get("value")
-        
-        if context_format == "json":
-            try:
-                additional_context = json.loads(context_value)
-            except json.JSONDecodeError:
-                logger.warning("Failed to parse context as JSON. Using as plain text.")
-                additional_context = {"text": context_value}
-        else:
-            additional_context = {"text": context_value}
-    
-    # Get task template
-    available_templates = Task.get_available_templates()
-    task_template = config_manager.get("local.scraper.task_template", "default")
-    
-    # Validate template choice
-    if task_template not in available_templates:
-        logger.warning(f"Invalid template: {task_template}. Using default template instead.")
-        task_template = "default"
+    local_config = parse_local_config()
     
     # Scrape the URL
     result = await scrape_url(
-        url=url,
-        prompt=prompt,
-        additional_context=additional_context,
-        task_template=task_template
+        url=local_config.get("url"),
+        prompt=local_config.get("prompt"),
+        additional_context=local_config.get("additional_context"),
+        task_template=local_config.get("task_template", "default"),
+        initial_actions=local_config.get("initial_actions", []),
     )
     # TODO: Handle different output formats
     # Format the result as JSON
     formatted_result = json.dumps(result, indent=2)
     
     # Output the result
-    output_path = config_manager.get("local.scraper.output_path")
+    output_path = local_config.get("output_path")
     if output_path:
         # Handle relative paths by resolving them relative to the script location
         if not os.path.isabs(output_path):

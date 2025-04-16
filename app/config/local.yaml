@@ -11,7 +11,7 @@ scraper:
   
   # Additional context to help with scraping
   context:
-    format: "text"  # or "text"
+    format: "text"  # "json" or "text"
     value: "Extract the Number of Nominations, Number of awards each film won and give the film that won the best picture award a value to represent that it won best picture"  # JSON string or plain text
   
   # Output file path (null means print to console)
