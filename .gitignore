@@ -1,6 +1,12 @@
 # secrets file
 app/config/secrets.yaml
 
+# all files in /results
+results/*
+
+# any folder that is named 'cookies'  and all cookies.json files
+cookies.json
+cookies/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
