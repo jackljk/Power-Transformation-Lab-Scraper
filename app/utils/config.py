@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 import logging
 import json
+from pydantic import BaseModel, Field, create_model
 
-from models.tasks_models import Task
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +167,26 @@ def load_custom_config() -> bool:
             return False
     return True  # No custom config specified, continue with default
 
-def parse_local_config():
+# returns a pydantic model of the content format
+def build_content_model() -> BaseModel:
+    """
+    Parse the content format from the configuration and return the corresponding model.
+    """
+    content_structure = config_manager.get("local.content_structure")
+    type_map = {
+        "str": (str, ...),
+        "int": (int, ...),
+        "float": (float, ...),
+        "bool": (bool, ...)
+    }
+    model_name, fields = next(iter(content_structure.items()))
+    model_fields = {k: type_map[v] for k, v in fields.items()}
+    
+    content_model = create_model(model_name, **model_fields)
+    return content_model
+    
+
+def parse_local_config(available_templates: list) -> dict:
     """
     Parse the local configuration file and set up the environment accordingly.
     
@@ -208,7 +227,8 @@ def parse_local_config():
     initial_actions = config_manager.get("local.scraper.initial_actions", [])
     if initial_actions:
         parsed_initial_actions = []
-        for action, value in initial_actions:
+        for initial_action in initial_actions:
+            action, value = list(initial_action.items())[0]
             if 'scroll' in action:
                 parsed_initial_actions.append({action: {"amount": value}})
             elif 'go_to_url' == action:
@@ -219,7 +239,6 @@ def parse_local_config():
         initial_actions = parsed_initial_actions
             
     # Set the task template
-    available_templates = Task.get_available_templates()
     task_template = config_manager.get("local.scraper.task_template", "default")
     
     if task_template not in available_templates:

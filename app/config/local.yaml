@@ -21,7 +21,29 @@ scraper:
   task_template: "default"
 
   initial_actions:
-    - ("scroll_down", 4000)  # Scroll down the page to load more content
+    - scroll_down: 4000 # Scroll down the page to load more content
   
   # Optional config file override (for when you need to specify a different config)
   config_override: null
+
+content_structure:
+  Film:
+    title: str
+    nominations: int
+    awards_won: int
+    best_picture: bool  # True if the film won the best picture award, False otherwise    
+
+########################################################################
+# Optional: Specify the content structure for the scraper to use
+# content_structure:
+#   <content_type>:
+#     <field_name>: <data_type>
+#     <field_name>: <data_type>
+#
+# Example
+# content_structure:
+#   Film:
+#     title: str
+#     nominations: int
+#     awards_won: int
+#     best_picture: bool  # True if the film won the best picture award, False otherwise
