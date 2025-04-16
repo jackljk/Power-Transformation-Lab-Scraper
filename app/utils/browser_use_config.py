@@ -31,7 +31,7 @@ def define_browser_use_context_config():
         highlight_elements=BROWSERUSE_HIGHLIGHT_ELEMENTS,
         save_recording_path=BROWSERUSE_SAVE_RECORDING_PATH,
         trace_path=BROWSERUSE_TRACE_PATH,
-        cookies_file="path/to/cookies.json",
+        cookies_file="cookies/cookies.json",
         locale='en-US',
         user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
         allowed_domains=None

@@ -42,6 +42,11 @@ class WebScraper:
         self.prompt = prompt
         self.task_template = task_template
         
+        # Set the inital actions to go to the URL provided
+        self.initial_actions = [
+            {"open_tab": {"url": url}},
+        ]
+        
         # Get the LLM instance for browser-use
         self.llm = get_llm_instance()
         
@@ -57,6 +62,7 @@ class WebScraper:
             llm=self.llm,
             controller=self.controller,
             browser_context=self.browser_context,
+            initial_actions=self.initial_actions,
         )
     
     async def scrape(self) -> Dict[str, Any]:
@@ -98,6 +104,9 @@ class WebScraper:
             
             # add template information to result_dict
             result_dict["task_template"] = self.task_template
+            
+            # Add prompt and URL to the result_dict
+            result_dict["prompt"] = self.prompt
             
             # Convert to the application's expected ScrapedResult format
             # processed_result = self._convert_to_scraped_result(structured_output)

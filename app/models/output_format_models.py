@@ -8,14 +8,23 @@ class Citation(BaseModel):
     """
     text: str = Field(..., description="The exact text from the webpage")
     location: str = Field(..., description="Description of where this was found")
-    confidence: float = Field(default=0.7, description="Confidence score (0.0-1.0) for the citation")
+    location_url: str = Field(..., description="URL of the location where the text was found using a link highlight")
     
+class testContent(BaseModel):
+    """
+    Model representing a test content with text and location.
+    """
+    title: str = Field(..., description="The title of the film")
+    nominations: int = Field(..., description="The number of nominations")
+    awards: int = Field(..., description="The number of awards")
+    best_picture: bool = Field(..., description="Whether the film won best picture or not")
+
 class ScraperOutput(BaseModel):
     """
     Standard output format model for browser-use scraping results.
     This model will be used with browser-use's Controller for structured output.
     """
-    content: Union[str, Dict[str, Any], List[Dict[str, Any]]] = Field(
+    content: List[testContent] = Field(
         ..., 
         description="Extracted information in the most appropriate format"
     )
