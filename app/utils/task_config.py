@@ -16,13 +16,16 @@ TASK_TEMPLATES = {
             2. For each piece of information, provide a citation with the exact text and location from the webpage.
             3. Provide a location_url to the specific part of the webpage where the information was found.
                 - To do this, you can use the following format:
-                    - Select a part of the text (e.g., a paragraph, a section, or a phrase) that contains the information.
+                    - Select a part of the text (e.g., a paragraph, a section, or a phrase) that contains the information or a part of the answer itself.
                     - Use the text selection to create a URL that points to that part of the webpage.
                     - Ensure to use URL-encoding for any special characters in the text selection.
-                - Example: If the text is "This is a sample text", the URL might look like:
-                    - https://example.com/page#section=This%20is%20a%20sample%20text
-            4. Analyze the extracted information and determine the most appropriate format for returning it.
-            5. Only include information that is relevant to the prompt.
+                    - Ensure to use '#:~text=' to indicate the text selection in the URL.
+                        - Example: If a part of the text is "This is a sample text", the URL might look like:
+                            - https://example.com/page#:~text=This%20is%20a%20sample%20text
+                - Another method is to perform a few actions to get the location URL:
+                    - Select/highlight the text that contains the information or part of the answer itself.
+                    - perform an action that corresponds to "copy link to highlight" 
+            4. Only include information that is relevant to the prompt.
             
             Additional context: {additional_context}
         """,

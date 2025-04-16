@@ -4,7 +4,7 @@ llm:
   # The provider for the LLM
   provider: "google" # Options: openai, azure, anthropic,, ollama, google, deepseek
   # The LLM model to use
-  model: "gemini-2.0-flash"
+  model: "gemini-1.5-flash"
 
 hyperparameters:
   # The temperature for the LLM

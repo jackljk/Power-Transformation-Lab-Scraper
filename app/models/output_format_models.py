@@ -5,7 +5,6 @@ from utils.config import build_content_model
 # get the content model for the output
 ContentModel = build_content_model()
 
-
 class Citation(BaseModel):
     """
     Model representing a citation with text, location and confidence.
