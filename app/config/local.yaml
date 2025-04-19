@@ -1,50 +1,12 @@
 # Local Scraper Configuration
 # --------------------------
 
-# Scraper parameters
+# Profile to use (loads complete configuration from profiles directory)
+profile: "wikipedia_extraction"
+
+# Override specific settings from the profile (optional)
 scraper:
-  # URL to scrape
-  url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
-  
-  # Information to extract
-  prompt: "Extract the list of all nommanies for Academy Award best picture for films produced in 2015 from the Wikipedia page."
-  
-  # Additional context to help with scraping
-  context:
-    format: "text"  # "json" or "text"
-    value: "Extract the Number of Nominations, Number of awards each film won and give the film that won the best picture award a value to represent that it won best picture"  # JSON string or plain text
-  
-  # Output file path (null means print to console)
-  output_path: "../results/test.json"  # Changed to a relative path
-  
-  # Task template to use
-  task_template: "default"
+  # Output file path override
+  output_path: "../results/custom_output.json"
 
-  initial_actions:
-    - scroll_down: 4000 # Scroll down the page to load more content
-  
-  # Optional config file override (for when you need to specify a different config)
-  config_override: null
-
-content_structure:
-  Film:
-    title: str
-    nominations: int
-    awards_won: int
-    index: int  # The index of the film in the list
-    best_picture: bool  # True if the film won the best picture award, False otherwise    
-
-########################################################################
-# Optional: Specify the content structure for the scraper to use
-# content_structure:
-#   <content_type>:
-#     <field_name>: <data_type>
-#     <field_name>: <data_type>
-#
-# Example
-# content_structure:
-#   Film:
-#     title: str
-#     nominations: int
-#     awards_won: int
-#     best_picture: bool  # True if the film won the best picture award, False otherwise
+# All other configuration is loaded from the profile

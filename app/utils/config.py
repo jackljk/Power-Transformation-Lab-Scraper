@@ -150,35 +150,64 @@ def get_llm_config():
 ####################################################################################
 def load_custom_config() -> bool:
     """
-    Load a custom configuration file specified as a command-line argument.
+    Load a custom configuration file specified as a command-line argument or from local config.
     
     Returns:
         bool: True if custom config was loaded successfully, False otherwise
     """
+    # Check for command-line override first
     if len(sys.argv) > 1 and sys.argv[1].endswith('.yaml'):
         config_override = sys.argv[1]
         config_path = Path(config_override)
         if config_path.exists():
-            logger.info(f"Loading config override: {config_override}")
+            logger.info(f"Loading config override from command line: {config_override}")
             config_manager.load_specific_config("local", str(config_path))
             return True
         else:
             logger.error(f"Config file not found: {config_override}")
             return False
-    return True  # No custom config specified, continue with default
+    
+    # If no command-line override, check for profile reference in local.yaml
+    profile_name = config_manager.get("local.profile")
+    if profile_name:
+        # Build the profile path relative to config directory
+        profile_path = Path(config_manager.config_dir) / "profiles" / f"{profile_name}.yaml"
+        if profile_path.exists():
+            logger.info(f"Loading profile: {profile_name}")
+            config_manager.load_specific_config("profile", str(profile_path))
+            return True
+        else:
+            logger.error(f"Profile not found: {profile_name}")
+            logger.error(f"Expected path: {profile_path}")
+            return False
+    
+    # No override specified, continue with default local config
+    return True
 
 # returns a pydantic model of the content format
 def build_content_model() -> BaseModel:
     """
     Parse the content format from the configuration and return the corresponding model.
     """
-    content_structure = config_manager.get("local.content_structure")
+    # First check for content structure in profile if it exists
+    content_structure = config_manager.get("profile.content_structure")
+    
+    # Fall back to local config if not found in profile
+    if not content_structure:
+        content_structure = config_manager.get("local.content_structure")
+    
+    # If no content structure defined anywhere, return a generic model
+    if not content_structure:
+        # Create a simple default model for text content
+        return create_model("TextContent", text=(str, ...))
+    
     type_map = {
         "str": (str, ...),
         "int": (int, ...),
         "float": (float, ...),
         "bool": (bool, ...)
     }
+    
     model_name, fields = next(iter(content_structure.items()))
     model_fields = {k: type_map[v] for k, v in fields.items()}
     
@@ -188,26 +217,45 @@ def build_content_model() -> BaseModel:
 
 def parse_local_config(available_templates: list) -> dict:
     """
-    Parse the local configuration file and set up the environment accordingly.
+    Parse the configuration from profile and/or local configs and set up the environment.
     
+    Args:
+        available_templates: List of available task templates
+        
     Returns:
-        None
+        dict: Dictionary of configuration values
     """
-    url = config_manager.get("local.scraper.url")
-    prompt = config_manager.get("local.scraper.prompt")
+    # Helper function to get config with profile fallback
+    def get_config(key, default=None):
+        # Only look in profile configuration, as local should only contain profile reference
+        # and optional overrides that should be explicitly checked
+        value = config_manager.get(f"profile.scraper.{key}")
+        
+        # Only check local for explicit overrides, not as fallback for missing values
+        if value is None and key in ["url", "prompt", "output_path", "task_template"]:
+            local_value = config_manager.get(f"local.scraper.{key}")
+            if local_value is not None:
+                logger.info(f"Using override from local config for: {key}")
+                return local_value
+        
+        return value if value is not None else default
+    
+    # Get required configuration
+    url = get_config("url")
+    prompt = get_config("prompt")
     
     # Validate required configuration
     if not url:
-        logger.error("URL is required in configuration (local.scraper.url)")
-        return
+        logger.error("URL is required in profile configuration (profile.scraper.url)")
+        return {}
     
     if not prompt:
-        logger.error("Prompt is required in configuration (local.scraper.prompt)")
-        return
+        logger.error("Prompt is required in profile configuration (profile.scraper.prompt)")
+        return {}
     
-    # handle additional context if provided
+    # Handle additional context
     additional_context = None
-    context_config = config_manager.get("local.scraper.context", {})
+    context_config = get_config("context", {})
     if context_config and context_config.get("value"):
         context_format = context_config.get("format")
         context_value = context_config.get("value")
@@ -215,16 +263,15 @@ def parse_local_config(available_templates: list) -> dict:
         if context_format == "json":
             try:
                 additional_context = json.loads(context_value)
-                # put the json into a string with newlines between each key-value pair in the format "key: value\n" 
                 additional_context = "\n".join([f"{k}: {v}" for k, v in additional_context.items()])
             except json.JSONDecodeError:
                 logger.warning("Failed to parse context as JSON. Using as plain text.")
                 additional_context = context_value
         else:
             additional_context = context_value
-            
-    # handle inital actions if provided
-    initial_actions = config_manager.get("local.scraper.initial_actions", [])
+    
+    # Handle initial actions
+    initial_actions = get_config("initial_actions", [])
     if initial_actions:
         parsed_initial_actions = []
         for initial_action in initial_actions:
@@ -237,22 +284,25 @@ def parse_local_config(available_templates: list) -> dict:
                 logger.warning(f"Unknown action: {action}. Skipping.")
                 continue
         initial_actions = parsed_initial_actions
-            
+    
     # Set the task template
-    task_template = config_manager.get("local.scraper.task_template", "default")
+    task_template = get_config("task_template", "default")
     
     if task_template not in available_templates:
         logger.warning(f"Invalid template: {task_template}. Using default template instead.")
         task_template = "default"
-        
-    # return all configuration values
+    
+    # Get output path
+    output_path = get_config("output_path")
+    
+    # Return all configuration values
     return {
         "url": url,
         "prompt": prompt,
         "additional_context": additional_context,
         "task_template": task_template,
         "initial_actions": initial_actions,
-        "output_path": config_manager.get("local.scraper.output_path"),
+        "output_path": output_path,
         "debug_mode": DEBUG_MODE,
     }
         
