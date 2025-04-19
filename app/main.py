@@ -5,10 +5,14 @@ import os
 from typing import Dict, Any, Optional
 import sys
 from pathlib import Path
+import glob
 
 from services.scraper import WebScraper
+
 from utils.config import DEBUG_MODE, load_custom_config, parse_local_config
 from utils.config_manager import config_manager
+from utils.logging import setup_results_path
+
 from models.tasks_models import Task
 
 
@@ -64,6 +68,12 @@ async def main():
     templates = Task.get_available_templates()
 
     local_config = parse_local_config(templates)
+    
+    # Set output path to a environment variable if provided to be accessible everywhere in the app
+    profile_name = local_config.get("profile_name")
+    output_path = local_config.get("output_path")
+    setup_results_path(output_path, profile_name)
+        
 
     # Scrape the URL
     result = await scrape_url(
@@ -78,8 +88,7 @@ async def main():
     # Format the result as JSON
     formatted_result = json.dumps(result, indent=2)
 
-    # Output the result
-    output_path = local_config.get("output_path")
+    # save the result to a file in output_path 
     if output_path:
         # Handle relative paths by resolving them relative to the script location
         if not os.path.isabs(output_path):

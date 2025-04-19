@@ -1,6 +1,9 @@
 # Wikipedia Extraction Profile
 # --------------------------
 
+# name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
+name: "wikipedia_extraction"
+
 scraper:
   # URL to scrape
   url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
@@ -12,9 +15,6 @@ scraper:
   context:
     format: "text"
     value: "Extract the Number of Nominations, Number of awards each film won and give the film that won the best picture award a value to represent that it won best picture"
-  
-  # Output file path (null means print to console)
-  output_path: "../results/academy_awards.json"
   
   # Task template to use
   task_template: "default"

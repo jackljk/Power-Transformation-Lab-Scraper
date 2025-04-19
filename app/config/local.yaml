@@ -4,9 +4,7 @@
 # Profile to use (loads complete configuration from profiles directory)
 profile: "wikipedia_extraction"
 
-# Override specific settings from the profile (optional)
-scraper:
-  # Output file path override
-  output_path: "../results/custom_output.json"
+# Output path for the scraper (FULL PATH)
+output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"
 
 # All other configuration is loaded from the profile

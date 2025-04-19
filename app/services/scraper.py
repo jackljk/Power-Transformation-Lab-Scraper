@@ -7,11 +7,11 @@ from browser_use import Agent, Controller
 
 from models.text_models import Citation as TextCitation, ScrapedResult
 from models.tasks_models import Task
+from models.llm_models import get_llm_instance
 from models.output_format_models import ScraperOutput, ScraperOutputList
 from utils.browser_use_config import define_browser_use_context_config
-from models.llm_models import get_llm_instance
 from utils.config import RUN_MAX_STEPS
-
+from services.scraper_hooks import save_page_content
 
 class WebScraper:
     """
@@ -51,7 +51,7 @@ class WebScraper:
         self.prompt = prompt
         self.task_template = task_template
 
-        # Set the inital actions to go to the URL provided and add from the given
+        # Set the initial actions to go to the URL provided and add from the given
         self.initial_actions = [
             {"open_tab": {"url": url}},
         ] + (initial_actions if initial_actions else [])
@@ -83,7 +83,7 @@ class WebScraper:
             A structured result containing the extracted information with citations
         """
         # Run the agent to collect information
-        history = await self.agent.run(max_steps=RUN_MAX_STEPS)
+        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_end=save_page_content)
 
         # Get the final result using the browser-use Controller
         result = history.final_result()

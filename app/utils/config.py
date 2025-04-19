@@ -9,7 +9,6 @@ from pydantic import BaseModel, Field, create_model
 
 logger = logging.getLogger(__name__)
 
-
 ###################################################################################
 # Browser-use Agent configuration
 ###################################################################################
@@ -102,8 +101,10 @@ AZURE_ENDPOINT = config_manager.get_secret("secrets.llm.azure.endpoint")
 
 
 # Raise error if required API key for selected provider is missing
-if LLM_PROVIDER in ["openai", "deepseek"] and not OPENAI_API_KEY:
+if LLM_PROVIDER == 'openai' and not OPENAI_API_KEY:
     raise ValueError("OpenAI API key is required when using OpenAI as provider")
+elif LLM_PROVIDER == 'deepseek' and not DEEPSEEK_API_KEY:
+    raise ValueError("DeepSeek API key is required when using DeepSeek as provider")
 elif LLM_PROVIDER == "anthropic" and not ANTHROPIC_API_KEY:
     raise ValueError("Anthropic API key is required when using Anthropic as provider")
 elif LLM_PROVIDER == "azure_openai" and not AZURE_API_KEY and not AZURE_ENDPOINT:
@@ -143,6 +144,8 @@ def get_llm_config():
         raise ValueError(f"Unsupported LLM provider: {LLM_PROVIDER}")
     
     return config
+
+
 
 
 ####################################################################################
@@ -229,14 +232,13 @@ def parse_local_config(available_templates: list) -> dict:
     def get_config(key, default=None):
         # Only look in profile configuration, as local should only contain profile reference
         # and optional overrides that should be explicitly checked
-        value = config_manager.get(f"profile.scraper.{key}")
+        if key == 'output_path':
+            # Check if output path is set in local config
+            value = config_manager.get("local.output_path")
+            if value:
+                return value
         
-        # Only check local for explicit overrides, not as fallback for missing values
-        if value is None and key in ["url", "prompt", "output_path", "task_template"]:
-            local_value = config_manager.get(f"local.scraper.{key}")
-            if local_value is not None:
-                logger.info(f"Using override from local config for: {key}")
-                return local_value
+        value = config_manager.get(f"profile.scraper.{key}")
         
         return value if value is not None else default
     
@@ -295,6 +297,9 @@ def parse_local_config(available_templates: list) -> dict:
     # Get output path
     output_path = get_config("output_path")
     
+    # get profile name for logging
+    profile_name = config_manager.get("profile.name")
+    
     # Return all configuration values
     return {
         "url": url,
@@ -302,6 +307,7 @@ def parse_local_config(available_templates: list) -> dict:
         "additional_context": additional_context,
         "task_template": task_template,
         "initial_actions": initial_actions,
+        "profile_name": profile_name,
         "output_path": output_path,
         "debug_mode": DEBUG_MODE,
     }
