@@ -6,7 +6,9 @@ from langchain_anthropic import ChatAnthropic
 import logging
 import os
 
-from utils.config import get_llm_config
+from utils.config.llm import (
+    get_llm_config,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +55,9 @@ def get_llm_instance() -> Any:
     set_llm_environment_variables(provider, LLM_CONFIG["api_key"], LLM_CONFIG.get("endpoint", None))
     
     return LLM_PROVIDERS[provider]["class"](**params)
+
+def get_planner_llm_instance() -> Any:
+    pass
 
 
 # Add a function to set the required environment variables for the selected LLM provider

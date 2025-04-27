@@ -8,7 +8,7 @@ def define_browser_use_context_config():
     
     This function initializes the browser configuration with the specified parameters.
     """
-    from utils.config import (
+    from utils.config.browser import (
     BROWSERUSE_HEADLESS,
     BROWSER_TIMEOUT,
     BROWSERUSE_WINDOW_SIZE,

@@ -7,7 +7,6 @@ import sys
 from pathlib import Path
 import glob
 
-
 from utils.config import DEBUG_MODE, load_custom_config, parse_local_config
 from utils.config_manager import config_manager
 from utils.logging import setup_results_path

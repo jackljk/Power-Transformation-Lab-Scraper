@@ -6,5 +6,3 @@ profile: "wikipedia_extraction"
 
 # Output path for the scraper (FULL PATH)
 output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"
-
-# All other configuration is loaded from the profile

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Union
-from utils.config import build_content_model
+from typing import List, Optional
+from utils.config.local import build_content_model
 
 # get the content model for the output
 ContentModel = build_content_model()

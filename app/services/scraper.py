@@ -9,8 +9,8 @@ from models.text_models import Citation as TextCitation, ScrapedResult
 from models.tasks_models import Task
 from models.llm_models import get_llm_instance
 from models.output_format_models import ScraperOutput, ScraperOutputList
-from utils.browser_use_config import define_browser_use_context_config
-from utils.config import RUN_MAX_STEPS
+from app.utils.config.browser_use import define_browser_use_context_config
+from utils.config.agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
 from services.scraper_hooks import save_page_content
 
 class WebScraper:
@@ -58,6 +58,8 @@ class WebScraper:
 
         # Get the LLM instance for browser-use
         self.llm = get_llm_instance()
+        
+        # self.planner_llm = get_planner_llm_instance()
 
         # create a browser-use browser config object
         self.browser_context, self.browser_config = define_browser_use_context_config()
@@ -67,12 +69,18 @@ class WebScraper:
 
         # Initialize the browser-use agent with the controller
         self.agent = Agent(
-            task=task_string,
+            task=task_string, # task string from the task object
+            # llm settings
             llm=self.llm,
+            planner_llm=self.planner_llm,
+            planner_interval=PLANNER_INTERVAL,
+            # Model output controller
             controller=self.controller,
+            # Additional context/initial actions
             message_context=additional_context_str,
-            browser_context=self.browser_context,
             initial_actions=self.initial_actions,
+            # browser-use config
+            browser_context=self.browser_context,
         )
 
     async def scrape(self) -> Dict[str, Any]:

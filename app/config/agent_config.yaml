@@ -5,6 +5,8 @@
 agent:
   use_vision: false  # Whether to use vision-based agent (Can be expensive) disable for text-based only agent or save cost with vision agents (e.g GPT-4o)
   save_conversation_path: null  # null mean don't save, otherwise save to the specified path
+  use_planner_model: true  # Whether to use a planner model (e.g GPT-4o-mini) a reasoning model to plan the actions of the agent 
 
 agent_run:
   max_steps: 5 # Maximum number of steps for the agent to run (prevent infinite loops and allows for control over the agent's execution time)
+  planner_interval: 10 # Number of steps to run the planner model - e.g if value is 10, planner model nly used to plan after every 10 steps

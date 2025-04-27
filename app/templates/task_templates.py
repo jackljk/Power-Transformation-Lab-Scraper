@@ -2,7 +2,7 @@
 Configuration file for defining scraping task templates.
 This allows for easy selection of different task formats for the scraper.
 """
-from typing import Dict, Any
+from typing import Dict
 
 # Dictionary of predefined task templates
 TASK_TEMPLATES = {
