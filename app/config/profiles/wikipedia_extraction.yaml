@@ -20,7 +20,10 @@ scraper:
   task_template: "default"
 
   initial_actions:
-    - scroll_down: 400
+    - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
+    # - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
 
 content_structure:
   Film:
@@ -45,3 +48,8 @@ content_structure:
 #     nominations: int
 #     awards_won: int
 #     best_picture: bool  # True if the film won the best picture award, False otherwise
+#########################################################################
+# Avalible Actions
+# - scroll_down: <pixels>  # Scroll down the page by a specified number of pixels
+# - scroll_up: <pixels>    # Scroll up the page by a specified number of pixels
+# - go_to_url: <url>  # Navigate to a specific URL

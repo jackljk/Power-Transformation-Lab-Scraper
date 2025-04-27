@@ -7,7 +7,6 @@ import sys
 from pathlib import Path
 import glob
 
-from services.scraper import WebScraper
 
 from utils.config import DEBUG_MODE, load_custom_config, parse_local_config
 from utils.config_manager import config_manager
@@ -43,6 +42,7 @@ async def scrape_url(
     Returns:
         A structured result containing the extracted information with citations
     """
+    from services.scraper import WebScraper
     try:
         logger.info(f"Scraping {url} for information about: {prompt}")
         scraper = WebScraper(
@@ -62,8 +62,9 @@ async def scrape_url(
 async def main():
     # Call the function at the start of main
     if not load_custom_config():
+        logger.error("Scraper shutting down please check your config file")
         return
-
+    
     # get all available templates
     templates = Task.get_available_templates()
 
@@ -74,7 +75,6 @@ async def main():
     output_path = local_config.get("output_path")
     setup_results_path(output_path, profile_name)
         
-
     # Scrape the URL
     result = await scrape_url(
         url=local_config.get("url"),
@@ -83,28 +83,18 @@ async def main():
         task_template=local_config.get("task_template", "default"),
         initial_actions=local_config.get("initial_actions", []),
     )
-
+    
     # TODO: Handle different output formats
     # Format the result as JSON
     formatted_result = json.dumps(result, indent=2)
 
-    # save the result to a file in output_path 
-    if output_path:
-        # Handle relative paths by resolving them relative to the script location
-        if not os.path.isabs(output_path):
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            output_path = os.path.normpath(os.path.join(script_dir, output_path))
-
-        # Create directory if it doesn't exist
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-        # Write results to file
-        with open(output_path, "w") as f:
-            f.write(formatted_result)
-        logger.info(f"Results saved to {output_path}")
-    else:
-        print(formatted_result)
-
+    results_env = os.getenv("RESULTS_PATH")
+    if not results_env:
+        logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
+        return
+    results_path = os.path.join(results_env, "output.json")
+    with open(results_path, "w") as f:
+        f.write(formatted_result)
 
 if __name__ == "__main__":
     asyncio.run(main())

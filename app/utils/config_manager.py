@@ -2,6 +2,9 @@ import yaml
 import os
 from pathlib import Path
 from typing import Any, Dict
+import logging 
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigManager:
@@ -29,7 +32,7 @@ class ConfigManager:
     def _load_configs(self) -> None:
         """Load all YAML files from the config directory."""
         if not self.config_dir.exists():
-            print(f"Warning: Config directory not found at {self.config_dir}")
+            logger.warning(f"Warning: Config directory not found at {self.config_dir}")
             return
         
         for config_file in self.config_dir.glob("*.yaml"):
@@ -37,9 +40,9 @@ class ConfigManager:
             try:
                 with open(config_file, 'r') as f:
                     self.configs[config_name] = yaml.safe_load(f)
-                print(f"Loaded configuration from {config_file}")
+                logger.info(f"Loaded configuration from {config_file}")
             except Exception as e:
-                print(f"Error loading {config_file}: {str(e)}")
+                logger.error(f"Error loading {config_file}: {str(e)}")
                 self.configs[config_name] = {}
     
     def reload(self) -> None:
@@ -63,9 +66,9 @@ class ConfigManager:
                 
             with open(file_path, 'r') as f:
                 self.configs[config_name] = yaml.safe_load(f)
-            print(f"Loaded specific configuration from {file_path} as {config_name}")
+            logger.info(f"Loaded specific configuration from {file_path} as {config_name}")
         except Exception as e:
-            print(f"Error loading specific config {file_path}: {str(e)}")
+            logger.error(f"Error loading specific config {file_path}: {str(e)}")
             self.configs[config_name] = {}
     
     def get(self, path: str, default: Any = None) -> Any:

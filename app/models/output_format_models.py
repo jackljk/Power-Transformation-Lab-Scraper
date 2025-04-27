@@ -9,7 +9,7 @@ class Citation(BaseModel):
     """
     Model representing a citation with text, location and confidence.
     """
-    text: str = Field(..., description="The exact text from the webpage")
+    source_text: str = Field(..., description="The exact text from the webpage where the data extracted was found")
     location: str = Field(..., description="Description of where this was found")
     location_url: str = Field(..., description="URL of the location where the text was found using a link highlight")
     
@@ -19,7 +19,7 @@ class ScraperOutput(BaseModel):
     Standard output format model for browser-use scraping results.
     This model will be used with browser-use's Controller for structured output.
     """
-    content: List[ContentModel] = Field(
+    content: List[ContentModel] = Field( 
         ..., 
         description="Extracted information in the most appropriate format"
     )

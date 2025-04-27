@@ -39,7 +39,6 @@ class WebScraper:
         task_obj = Task.from_template(
             template_name=task_template,
             prompt=prompt,
-            additional_context=additional_context_str,
         )
 
         # Get the combined task string
@@ -71,6 +70,7 @@ class WebScraper:
             task=task_string,
             llm=self.llm,
             controller=self.controller,
+            message_context=additional_context_str,
             browser_context=self.browser_context,
             initial_actions=self.initial_actions,
         )
@@ -109,7 +109,7 @@ class WebScraper:
                     parsed: ScraperOutputList = ScraperOutputList.model_validate_json(
                         result_json
                     )
-                except Exception as inner_e:
+                except Exception:
                     # If both approaches fail, raise the original error
                     raise e
 

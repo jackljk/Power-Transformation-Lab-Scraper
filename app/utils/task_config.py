@@ -3,7 +3,6 @@ Configuration file for defining scraping task templates.
 This allows for easy selection of different task formats for the scraper.
 """
 from typing import Dict, Any
-from models.output_format_models import ScraperOutput
 
 # Dictionary of predefined task templates
 TASK_TEMPLATES = {
@@ -22,15 +21,9 @@ TASK_TEMPLATES = {
                     - Ensure to use '#:~text=' to indicate the text selection in the URL.
                         - Example: If a part of the text is "This is a sample text", the URL might look like:
                             - https://example.com/page#:~text=This%20is%20a%20sample%20text
-                - Another method is to perform a few actions to get the location URL:
-                    - Select/highlight the text that contains the information or part of the answer itself.
-                    - perform an action that corresponds to "copy link to highlight" 
             4. Only include information that is relevant to the prompt.
-            
-            Additional context: {additional_context}
-        """,
-        "output_format": ScraperOutput
-    },
+        """
+    },  
     
     "summary": {
         "task_format": """
