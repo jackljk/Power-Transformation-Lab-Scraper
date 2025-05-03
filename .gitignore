@@ -1,6 +1,10 @@
 # secrets file
 app/config/secrets.yaml
 
+#vscode files
+.vscode/
+
+
 # all files in /results 
 results/*
 results/
