@@ -6,7 +6,7 @@ import os
 import logging
 import base64
 
-from utils.scraper_utils import save_to_pdf
+from app.utils.scraper_utils import save_to_pdf
 import copy
 
 logger = logging.getLogger(__name__)

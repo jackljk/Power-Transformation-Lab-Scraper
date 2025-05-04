@@ -7,11 +7,12 @@ import sys
 from pathlib import Path
 import glob
 
-from utils.config import DEBUG_MODE, load_custom_config, parse_local_config
-from utils.config_manager import config_manager
-from utils.logging import setup_results_path
+from app.utils.config.local import load_profile_config, parse_local_config
+from app.utils.config_manager import config_manager
+from app.utils.logging import setup_results_path
+from app.utils.config.agent import DEBUG_MODE
 
-from models.tasks_models import Task
+from app.models.tasks_models import Task
 
 
 # Configure logging
@@ -41,7 +42,7 @@ async def scrape_url(
     Returns:
         A structured result containing the extracted information with citations
     """
-    from services.scraper import WebScraper
+    from app.services.scraper import WebScraper
     try:
         logger.info(f"Scraping {url} for information about: {prompt}")
         scraper = WebScraper(
@@ -60,7 +61,7 @@ async def scrape_url(
 
 async def main():
     # Call the function at the start of main
-    if not load_custom_config():
+    if not load_profile_config():
         logger.error("Scraper shutting down please check your config file")
         return
     

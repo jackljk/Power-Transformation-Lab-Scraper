@@ -44,7 +44,7 @@ from .config.llm import (
 )
 
 from .config.local import (
-    load_custom_config,
+    load_profile_config,
     build_content_model,
     parse_local_config,
 )

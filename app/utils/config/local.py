@@ -11,7 +11,7 @@ from ..config_manager import config_manager
 
 logger = logging.getLogger(__name__)
 
-def load_custom_config() -> bool:
+def load_profile_config() -> bool:
     """
     Load a custom configuration file specified as a command-line argument or from local config.
 

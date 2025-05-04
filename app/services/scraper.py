@@ -5,13 +5,13 @@ import json
 # Import browser-use for web scraping with AI
 from browser_use import Agent, Controller
 
-from models.text_models import Citation as TextCitation, ScrapedResult
-from models.tasks_models import Task
-from models.llm_models import get_llm_instance
-from models.output_format_models import ScraperOutput, ScraperOutputList
+from app.models.text_models import Citation as TextCitation, ScrapedResult
+from app.models.tasks_models import Task
+from app.models.llm_models import get_llm_instance, get_planner_llm_instance
+from app.models.output_format_models import ScraperOutput, ScraperOutputList
 from app.utils.config.browser_use import define_browser_use_context_config
-from utils.config.agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
-from services.scraper_hooks import save_page_content
+from app.utils.config.agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
+from app.services.scraper_hooks import save_page_content
 
 class WebScraper:
     """
@@ -59,7 +59,7 @@ class WebScraper:
         # Get the LLM instance for browser-use
         self.llm = get_llm_instance()
         
-        # self.planner_llm = get_planner_llm_instance()
+        self.planner_llm = get_planner_llm_instance()
 
         # create a browser-use browser config object
         self.browser_context, self.browser_config = define_browser_use_context_config()

@@ -6,7 +6,7 @@ from langchain_anthropic import ChatAnthropic
 import logging
 import os
 
-from utils.config.llm import (
+from app.utils.config.llm import (
     get_llm_config,
 )
 
