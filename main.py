@@ -74,27 +74,34 @@ async def main():
     profile_name = local_config.get("profile_name")
     output_path = local_config.get("output_path")
     setup_results_path(output_path, profile_name)
-        
-    # Scrape the URL
-    result = await scrape_url(
-        url=local_config.get("url"),
-        prompt=local_config.get("prompt"),
-        additional_context=local_config.get("additional_context"),
-        task_template=local_config.get("task_template", "default"),
-        initial_actions=local_config.get("initial_actions", []),
-    )
     
-    # TODO: Handle different output formats
-    # Format the result as JSON
-    formatted_result = json.dumps(result, indent=2)
+    try:
+        # Scrape the URL
+        result = await scrape_url(
+            url=local_config.get("url"),
+            prompt=local_config.get("prompt"),
+            additional_context=local_config.get("additional_context"),
+            task_template=local_config.get("task_template", "default"),
+            initial_actions=local_config.get("initial_actions", []),
+        )
+        
+        # TODO: Handle different output formats
+        # Format the result as JSON
+        formatted_result = json.dumps(result, indent=2)
 
-    results_env = os.getenv("RESULTS_PATH")
-    if not results_env:
-        logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
-        return
-    results_path = os.path.join(results_env, "output.json")
-    with open(results_path, "w") as f:
-        f.write(formatted_result)
+        results_env = os.getenv("RESULTS_PATH")
+        if not results_env:
+            logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
+            return
+        results_path = os.path.join(results_env, "output.json")
+        with open(results_path, "w") as f:
+            f.write(formatted_result)
+    except Exception as e:
+        logger.error(f"Error during scraping: {str(e)}")
+        raise
+    finally:
+        # Clean up any resources if needed
+        pass
 
 if __name__ == "__main__":
     asyncio.run(main())

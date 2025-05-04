@@ -12,7 +12,6 @@ from app.utils.config.llm import (
 
 logger = logging.getLogger(__name__)
 
-LLM_CONFIG = get_llm_config()
 
 # Combined dictionary with provider information
 LLM_PROVIDERS = {
@@ -24,13 +23,15 @@ LLM_PROVIDERS = {
     "deepseek": {"class": ChatOpenAI, "endpoint_required": False, "custom_url": "https://api.deepseek.com/v1"}
 }
 
-def get_llm_instance() -> Any:
+def get_llm_instance(planner=False) -> Any:
     """
     Get an instance of the LLM based on the configuration.
     
     Returns:
         An instance of the LLM class based on the provider specified in the configuration.
     """
+    LLM_CONFIG = get_llm_config(planner=planner)
+    
     provider = LLM_CONFIG["provider"]
     
     if provider not in LLM_PROVIDERS:
