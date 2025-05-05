@@ -57,10 +57,6 @@ def get_llm_instance(planner=False) -> Any:
     
     return LLM_PROVIDERS[provider]["class"](**params)
 
-def get_planner_llm_instance() -> Any:
-    pass
-
-
 # Add a function to set the required environment variables for the selected LLM provider
 def set_llm_environment_variables(provider, api_key=None, endpoint=None):
     """

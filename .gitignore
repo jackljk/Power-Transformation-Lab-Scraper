@@ -1,9 +1,13 @@
 # secrets file
 app/config/secrets.yaml
 
-#vscode files
+# VSCode files
 .vscode/
-
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.code-snippets
 
 # all files in /results 
 results/*

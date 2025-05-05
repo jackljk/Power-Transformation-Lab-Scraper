@@ -7,6 +7,7 @@ import json
 import logging
 from pathlib import Path
 from pydantic import BaseModel, create_model
+from typing import Type
 from ..config_manager import config_manager
 
 logger = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ def load_profile_config() -> bool:
     return True
 
 
-def build_content_model() -> BaseModel:
+def build_content_model() -> Type[BaseModel]:
     """
     Parse the content format from the configuration and return the corresponding model.
     """

@@ -59,7 +59,7 @@ class WebScraper:
         # Get the LLM instance for browser-use
         self.llm = get_llm_instance()
         
-        self.planner_llm = get_planner_llm_instance()
+        self.planner_llm = get_llm_instance(planner=True) if USE_PLANNER_MODEL else None
 
         # create a browser-use browser config object
         self.browser_context, self.browser_config = define_browser_use_context_config()

@@ -4,7 +4,7 @@ llm:
   # The provider for the LLM
   provider: "openai" # Options: openai, azure, anthropic,, ollama, google, deepseek
   # The LLM model to use
-  model: "gpt-4.1-mini"
+  model: "gpt-4o"
 
 planner_llm:
   # The provider for the LLM
