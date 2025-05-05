@@ -64,7 +64,7 @@ class ConfigManager:
                 print(f"Warning: Config file not found at {file_path}")
                 return
                 
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 self.configs[config_name] = yaml.safe_load(f)
             logger.info(f"Loaded specific configuration from {file_path} as {config_name}")
         except Exception as e:

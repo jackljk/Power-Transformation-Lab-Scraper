@@ -9,30 +9,40 @@ class Task(BaseModel):
     template_name: str = Field("default", description="Name of the task template used")
     
     @classmethod
-    def from_template(cls, template_name: str = "default", prompt: str = "") -> "Task":
+    def from_template(cls, prompt: Union[str, Dict[str, Any]], template_name: str = "default",) -> "Task":
         """
         Create a Task instance from a predefined template.
         
         Args:
             template_name: Name of the template to use
             prompt: The prompt to insert into the template
-            additional_context: Additional context to insert into the template
             
         Returns:
             A Task instance with populated task and output_format fields
         """
         template = get_task_template(template_name)
         
-        task_str = template["task_format"].format(
-            prompt=prompt,
-        )
+        if template_name == "default":
+            task_str = template["task_format"].format(
+                prompt=prompt,
+            )
+        elif template_name == "tabular_extraction":
+            task_str = template["task_format"].format(
+                website=prompt["website"],
+                data_category=prompt["data_category"],
+                data_points=prompt["data_points"],
+                no_pages=prompt["no_pages"],
+                filters=prompt["filters"],
+                url=prompt["url"],
+            )
+        
         
         return cls(
             task=task_str,
             template_name=template_name
         )
     
-    def get_combined_task(self) -> str:
+    def get_task_string(self) -> str:
         """
         Get the complete task string with both the task instructions and output format.
         

@@ -3,7 +3,7 @@
 
 # Main agent settings
 agent:
-  use_vision: false  # Whether to use vision-based agent (Can be expensive) disable for text-based only agent or save cost with vision agents (e.g GPT-4o)
+  use_vision: true  # Whether to use vision-based agent (Can be expensive) disable for text-based only agent or save cost with vision agents (e.g GPT-4o)
   save_conversation_path: null  # null mean don't save, otherwise save to the specified path
   use_planner_model: true  # Whether to use a planner model (e.g GPT-4o-mini) a reasoning model to plan the actions of the agent 
 

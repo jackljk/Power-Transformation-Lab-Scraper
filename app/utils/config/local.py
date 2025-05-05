@@ -118,10 +118,28 @@ def parse_local_config(available_templates: list) -> dict:
             "Prompt is required in profile configuration (profile.scraper.prompt)"
         )
         return {}
+    
+    # parse the prompt
+    task_template = get_config("prompt.task_template")
+    if task_template == "default":
+        prompt_res = get_config("prompt.text")
+    elif task_template == "tabular_extraction":
+        prompt_res = {
+            "website": get_config("prompt.context.website"),
+            "data_category": get_config("prompt.context.data_category"),
+            "data_points": get_config("prompt.context.data_points"),
+            "no_pages": get_config("prompt.context.no_pages"),
+            "filters": get_config("prompt.context.filters"),
+            'url': url,
+        }
+    else:
+        raise ValueError(
+            f"Unsupported task template: {prompt.task_template}. Supported templates are: {', '.join(available_templates)}"
+        )
 
     # Handle additional context
     additional_context = None
-    context_config = get_config("context", {})
+    context_config = get_config("additional_context", {})
     if context_config and context_config.get("value"):
         context_format = context_config.get("format")
         context_value = context_config.get("value")
@@ -153,14 +171,6 @@ def parse_local_config(available_templates: list) -> dict:
                 continue
         initial_actions = parsed_initial_actions
 
-    # Set the task template
-    task_template = get_config("task_template", "default")
-
-    if task_template not in available_templates:
-        logger.warning(
-            f"Invalid template: {task_template}. Using default template instead."
-        )
-        task_template = "default"
 
     # Get output path
     output_path = get_config("output_path")
@@ -171,9 +181,9 @@ def parse_local_config(available_templates: list) -> dict:
     # Return all configuration values
     return {
         "url": url,
-        "prompt": prompt,
-        "additional_context": additional_context,
+        "prompt": prompt_res,
         "task_template": task_template,
+        "additional_context": additional_context,
         "initial_actions": initial_actions,
         "profile_name": profile_name,
         "output_path": output_path,

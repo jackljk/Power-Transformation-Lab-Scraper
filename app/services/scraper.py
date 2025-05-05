@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 import json
 
 # Import browser-use for web scraping with AI
@@ -7,7 +7,7 @@ from browser_use import Agent, Controller
 
 from app.models.text_models import Citation as TextCitation, ScrapedResult
 from app.models.tasks_models import Task
-from app.models.llm_models import get_llm_instance, get_planner_llm_instance
+from app.models.llm_models import get_llm_instance
 from app.models.output_format_models import ScraperOutput, ScraperOutputList
 from app.utils.config.browser_use import define_browser_use_context_config
 from app.utils.config.agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
@@ -22,7 +22,7 @@ class WebScraper:
     def __init__(
         self,
         url: str,
-        prompt: str,
+        prompt: Union[str, Dict[str, Any]],
         additional_context: Optional[Dict[str, Any]] = None,
         task_template: str = "default",
         initial_actions: Optional[List[Dict[str, Any]]] = None,
@@ -36,13 +36,11 @@ class WebScraper:
         )
 
         # Create a Task instance from the specified template
-        task_obj = Task.from_template(
+        task_string = Task.from_template(
             template_name=task_template,
             prompt=prompt,
-        )
+        ).get_task_string()
 
-        # Get the combined task string
-        task_string = task_obj.get_combined_task()
 
         # Store task-related properties
         self.task_string = task_string
@@ -74,6 +72,7 @@ class WebScraper:
             llm=self.llm,
             planner_llm=self.planner_llm,
             planner_interval=PLANNER_INTERVAL,
+            use_vision_for_planner=False,
             # Model output controller
             controller=self.controller,
             # Additional context/initial actions

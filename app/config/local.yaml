@@ -2,7 +2,7 @@
 # --------------------------
 
 # Profile to use (loads complete configuration from profiles directory)
-profile: "wikipedia_extraction"
+profile: "coal_prices_tabular"
 
 # Output path for the scraper (FULL PATH)
 output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"

@@ -8,8 +8,8 @@ browser:
   
   # Page load timing configurations (in seconds)
   wait_times:
-    min_page_load: 1
-    max_page_load: 5
+    min_page_load: 3
+    max_page_load: 10
     timeout: 300  # General timeout for browser operations
   
   # Browser window display settings

@@ -1,0 +1,56 @@
+# Wikipedia Extraction Profile
+# --------------------------
+
+# name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
+name: "WeChat National Energy Grid Feb 25"
+
+scraper:
+  # URL to scrape
+  url: "https://mp.weixin.qq.com/s/1y95VWwh5TJ_8WX-3AzMuQ"
+  
+  # Information to extract
+  prompt: "Extract the data values from the WeChat article about the wind and solar utilization rate for different provinces in China."
+  
+  # Additional context to help with scraping
+  context:
+    format: "text"
+    value: "The information is presented in a table format, which is an image on the websites. Use vision to take the image upload to API to read and extract the data values from the image and parse into the output format. Make sure to capture the entire image and extract all the data values translating it to English."
+  
+  # Task template to use
+  task_template: "default"
+
+  initial_actions:
+    # - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
+    # - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
+
+content_structure:
+  Energy_Utilization_Rate:
+    province: str
+    Wind_Utilization_Rate_Jan: float
+    Wind_Utilization_Rate_Jan-Feb: float
+    Solar_Utilization_Rate_Jan: float
+    Solar_Utilization_Rate_Jan-Feb: float
+
+
+
+########################################################################
+# Optional: Specify the content structure for the scraper to use
+# content_structure:
+#   <content_type>:
+#     <field_name>: <data_type>
+#     <field_name>: <data_type>
+#
+# Example
+# content_structure:
+#   Film:
+#     title: str
+#     nominations: int
+#     awards_won: int
+#     best_picture: bool  # True if the film won the best picture award, False otherwise
+#########################################################################
+# Avalible Actions
+# - scroll_down: <pixels>  # Scroll down the page by a specified number of pixels
+# - scroll_up: <pixels>    # Scroll up the page by a specified number of pixels
+# - go_to_url: <url>  # Navigate to a specific URL
