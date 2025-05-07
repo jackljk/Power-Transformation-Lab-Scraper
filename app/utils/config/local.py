@@ -6,7 +6,7 @@ import sys
 import json
 import logging
 from pathlib import Path
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, Field
 from typing import Type
 from ..config_manager import config_manager
 
@@ -62,7 +62,11 @@ def build_content_model() -> Type[BaseModel]:
 
     # Fall back to basic content structure if not found in profile
     if not content_structure:
-        return create_model("TextContent", text=(str, ...))
+        return create_model(
+            "TextContent", 
+            text=(str, ...), 
+            # location_url=(str, Field(..., description="URL of the location where the text was found using a link highlight"))
+        )
 
     type_map = {
         "str": (str, ...),
@@ -73,6 +77,9 @@ def build_content_model() -> Type[BaseModel]:
 
     model_name, fields = next(iter(content_structure.items()))
     model_fields = {k: type_map[v] for k, v in fields.items()}
+    
+    # # Add location_url field to custom model
+    # model_fields["location_url"] = (str, Field(..., description="URL of the location where the text was found using a link highlight"))
 
     content_model = create_model(model_name, **model_fields)
     return content_model
