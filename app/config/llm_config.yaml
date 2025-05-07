@@ -14,7 +14,7 @@ planner_llm:
 
 hyperparameters:
   # The temperature for the LLM
-  temperature: 0.7
+  temperature: 1.0
   # The maximum number of tokens to generate
   max_tokens: 2000
   # The top_p for nucleus sampling

@@ -15,7 +15,7 @@ scraper:
       website: "Qinhuangdao Thermal Coal Index秦皇岛动力煤价格指数"
       data_category: "Comprehensive transaction price"
       data_points: "5500 kcal coal prices and month-month increase or decrease"
-      no_pages: 3
+      no_pages: 1
       filters: null
 
   
@@ -25,7 +25,7 @@ scraper:
     value: "The information is presented in a table format in Chinese, the table contains the date, with the prices and month-month increase or decrease for 5500, 5000 and 4500 kcal coal prices. Only extract the 5500 kcal prices and month-month increase or decrease. The table also has multiple pages, only extract the data on the first page. Ensure the output is in English and the date is in YYYY-MM-DD format."
 
   initial_actions:
-    # - scroll_down: 4000
+    - scroll_down: 800
     # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
     # - scroll_down: 4000
     # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
