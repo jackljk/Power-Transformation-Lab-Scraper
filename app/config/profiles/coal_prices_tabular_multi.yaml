@@ -2,43 +2,43 @@
 # --------------------------
 
 # name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
-name: "WeChat National Energy Grid Feb 25"
+name: "coal_prices_tabular_multi"
 
 scraper:
   # URL to scrape
-  url: "https://mp.weixin.qq.com/s/1y95VWwh5TJ_8WX-3AzMuQ"
+  url: "https://www.cctd.com.cn/index.php?m=content&c=index&a=lists&catid=454&data=CCTD%C7%D8%BB%CA%B5%BA%B6%AF%C1%A6%C3%BA%BC%DB%B8%F1&name=CCTD%C7%D8%BB%CA%B5%BA%B6%AF%C1%A6%C3%BA%BC%DB%B8%F1"
   
   # Information to extract
   prompt: 
-    task_template: "default"
-    text: |-
-      Extract the data values from the WeChat article about the wind and solar utilization rate for different provinces in China. 
-      The table is presented as an image. Use vision to take the image, upload it to LLM to read and extract the data values from the image, 
-      and parse them into the output format. Make sure to capture the entire image and extract all the data values, translating them to English. 
-      Image is located at XPATH='//*[@id="js_content"]/section[1]/section/section/section[2]/img'
+    task_template: "tabular_extraction"
+    context:
+      website: "Qinhuangdao Thermal Coal Index秦皇岛动力煤价格指数"
+      data_category: "Comprehensive transaction price"
+      data_points: "coal prices and month-month increase or decrease for 5500 kcal , 5000 kcal and 4500 kcal"
+      no_pages: 3
+      filters: null
+
   
   # Additional context to help with scraping
-  context:
+  additional_context:
     format: "text"
-    value: "NA"
-  
-  # Task template to use
-  task_template: "default"
+    value: "The information is presented in a table format in Chinese, the table contains the date, with the prices and month-month increase or decrease for 5500, 5000 and 4500 kcal coal prices. The table also has multiple pages, you may use the click feature to click on 下一页 (Next page) to navigate to the next page. Ensure the output is in English and the date is in YYYY-MM-DD format."
 
   initial_actions:
-    - scroll_down: 100
+    - scroll_down: 800
     # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
     # - scroll_down: 4000
     # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
 
 content_structure:
-  Energy_Utilization_Rate:
-    province: str
-    Wind_Utilization_Rate_Jan: float
-    Wind_Utilization_Rate_Jan-Feb: float
-    Solar_Utilization_Rate_Jan: float
-    Solar_Utilization_Rate_Jan-Feb: float
-
+  Coal_Prices:
+    date: str
+    5500_kcal_price: float
+    5500_kcal_change: float
+    5000_kcal_price: float
+    5000_kcal_change: float
+    4500_kcal_price: float
+    4500_kcal_change: float
 
 
 ########################################################################

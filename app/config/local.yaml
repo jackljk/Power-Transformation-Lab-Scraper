@@ -2,7 +2,7 @@
 # --------------------------
 
 # Profile to use (loads complete configuration from profiles directory)
-profile: "coal_prices_tabular"
+profile: "wechat_national_energy_grid_feb25"
 
 # Output path for the scraper (FULL PATH)
 output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"

@@ -15,7 +15,7 @@ scraper:
       website: "Qinhuangdao Thermal Coal Index秦皇岛动力煤价格指数"
       data_category: "Comprehensive transaction price"
       data_points: "5500 kcal coal prices and month-month increase or decrease"
-      no_pages: 1
+      no_pages: 3
       filters: null
 
   
