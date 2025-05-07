@@ -96,6 +96,8 @@ async def main():
         results_path = os.path.join(results_env, "output.json")
         with open(results_path, "w") as f:
             f.write(formatted_result)
+            
+        logging.info(f"Scraping completed successfully. Results saved to {results_path}")
     except Exception as e:
         logger.error(f"Error during scraping: {str(e)}")
         raise

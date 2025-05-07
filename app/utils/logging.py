@@ -1,6 +1,8 @@
 import os
 import logging
 import random
+from datetime import datetime
+from time import sleep
 
 logger = logging.getLogger(__name__)
 
@@ -14,11 +16,13 @@ def setup_results_path(output_path: str, profile_name: str) -> str:
         raise ValueError("Profile name and output path are required. Please provide valid values.")
 
     # check in the results path against all dirs that have the profile name in them ,append a 5 character random string to the end of the path
-    random_string = os.urandom(5).hex()
-    results_path = os.path.join(output_path, profile_name, random_string)
+    timestamp = datetime.now().strftime("%y%m%d%H%M%S")
+    results_path = os.path.join(output_path, profile_name, timestamp)
     while os.path.exists(results_path):
-        random_string = os.urandom(5).hex()
-        results_path = os.path.join(output_path, profile_name, random_string)
+        # In the unlikely case of collision, wait a second and try again
+        sleep(1)
+        timestamp = datetime.now().strftime("%y%m%d%H%M%S")
+        results_path = os.path.join(output_path, profile_name, timestamp)
         
     # save the results path to the environment variable
     os.environ["RESULTS_PATH"] = results_path
