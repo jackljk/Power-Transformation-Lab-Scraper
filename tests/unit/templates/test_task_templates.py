@@ -31,8 +31,3 @@ def test_template_content_structure():
     for template_name, template in TASK_TEMPLATES.items():
         assert "task_format" in template
         assert isinstance(template["task_format"], str)
-        
-        # All templates except default should have output_format
-        if template_name != "default":
-            assert "output_format" in template
-            assert isinstance(template["output_format"], str)

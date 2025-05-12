@@ -43,14 +43,20 @@ async def scrape_url(
         A structured result containing the extracted information with citations
     """
     from app.services.scraper import WebScraper
+    from app.models.output_format_models import build_output_model
+    
+    content_structure = config_manager.get("profile.content_structure")
+    
     try:
         logger.info(f"Scraping {url} for information about: {prompt}")
+        
         scraper = WebScraper(
             url=url,
             prompt=prompt,
             additional_context=additional_context,
             task_template=task_template,
             initial_actions=initial_actions,
+            output_format=build_output_model(content_structure),
         )
         result = await scraper.scrape()
         return result

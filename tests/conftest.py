@@ -9,15 +9,6 @@ import json
 # Add the parent directory to the path so we can import from app
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Setup asyncio for pytest
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create an instance of the default event loop for each test case."""
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    yield loop
-    loop.close()
-
 # Mock environment variables for testing
 @pytest.fixture(scope="function")
 def mock_env_variables():

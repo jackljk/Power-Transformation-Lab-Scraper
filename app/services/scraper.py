@@ -1,17 +1,18 @@
 import os
 from typing import Dict, Any, Optional, List, Union
+from pydantic import BaseModel, Field, ValidationError
 import json
 
 # Import browser-use for web scraping with AI
 from browser_use import Agent, Controller
 
-from app.models.text_models import Citation as TextCitation, ScrapedResult
 from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
-from app.models.output_format_models import ScraperOutput, ScraperOutputList
+from app.models.output_format_models import build_output_model
 from app.utils.config.browser_use import define_browser_use_context_config
 from app.utils.config.agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
 from app.services.scraper_hooks import save_page_content
+
 
 class WebScraper:
     """
@@ -26,10 +27,13 @@ class WebScraper:
         additional_context: Optional[Dict[str, Any]] = None,
         task_template: str = "default",
         initial_actions: Optional[List[Dict[str, Any]]] = None,
+        output_format: Union[BaseModel] = None
     ):
         """
         Initialize the WebScraper.
         """
+        assert output_format, "Output format model is required"
+        
         # Convert additional_context to string format
         additional_context_str = (
             str(additional_context) if additional_context else "None provided"
@@ -47,6 +51,7 @@ class WebScraper:
         self.url = url
         self.prompt = prompt
         self.task_template = task_template
+        self.output_format = output_format
 
         # Set the initial actions to go to the URL provided and add from the given
         self.initial_actions = [
@@ -63,7 +68,7 @@ class WebScraper:
         self.browser_context, self.browser_config = define_browser_use_context_config()
 
         # Create a controller with our output model
-        self.controller = Controller(output_model=ScraperOutput)
+        self.controller = Controller(output_model=output_format)
 
         # Initialize the browser-use agent with the controller
         self.agent = Agent(
@@ -95,16 +100,16 @@ class WebScraper:
         # Get the final result using the browser-use Controller
         result = history.final_result()
 
-        # TODO: ERROR HANDLING/HISTORY Logging
+        # build the output model
 
         if result:
             # Parse the result using our Pydantic model
             try:
                 # First try to parse as is (might already be a list)
-                parsed: ScraperOutputList = ScraperOutputList.model_validate_json(
+                parsed: self.output_format = self.output_format.model_validate_json( # type: ignore
                     result
                 )
-            except Exception as e:
+            except ValidationError as e:
                 # If direct parsing fails, try wrapping the result in an outputs list
                 try:
                     result_obj = json.loads(result)
@@ -113,7 +118,7 @@ class WebScraper:
                     # Convert back to JSON string
                     result_json = json.dumps(wrapped_result)
                     # Try parsing the wrapped result
-                    parsed: ScraperOutputList = ScraperOutputList.model_validate_json(
+                    parsed: self.output_format = self.output_format.model_validate_json( # type: ignore
                         result_json
                     )
                 except Exception:
@@ -137,7 +142,7 @@ class WebScraper:
             # Handle the case where no result was returned
             return self._create_empty_result()
 
-    def _convert_to_scraped_result(self, output: ScraperOutput) -> ScrapedResult:
+    def _convert_to_scraped_result(self, output):
         """
         Convert the browser-use structured output to our ScrapedResult model.
 
@@ -147,37 +152,17 @@ class WebScraper:
         Returns:
             A ScrapedResult object with the data from browser-use
         """
-        # Convert citations from browser-use format to our application format
-        citations = [
-            TextCitation(
-                text=citation.text,
-                source_url=self.url,
-                selector_path=citation.location,
-                confidence_score=citation.confidence,
-            )
-            for citation in output.citations
-        ]
-
-        # If no citations were found, add a default citation
-        if not citations:
-            citations = [
-                TextCitation(
-                    text="Information extracted from webpage",
-                    source_url=self.url,
-                    selector_path="",
-                    confidence_score=0.7,
-                )
-            ]
-
-        # Return the converted result
-        return ScrapedResult(
-            content=output.content,
-            citations=citations,
-            format_type=output.format_type,
-            prompt=self.prompt,
-            url=self.url,
-            summary=output.summary,
-        )
+        # Extract the relevant data from the output based on our output model structure
+        result_dict = output
+        if hasattr(output, "model_dump"):
+            result_dict = output.model_dump()
+        
+        # Add metadata to the result
+        result_dict["url"] = self.url
+        result_dict["prompt"] = self.prompt
+        result_dict["task_template"] = self.task_template
+        
+        return result_dict
 
     def _create_empty_result(self) -> Dict[str, Any]:
         """
@@ -186,22 +171,13 @@ class WebScraper:
         Returns:
             A dictionary with default values
         """
-        empty_result = ScrapedResult(
-            content="No data extracted",
-            citations=[
-                TextCitation(
-                    text="No information found",
-                    source_url=self.url,
-                    selector_path="",
-                    confidence_score=0.0,
-                )
-            ],
-            format_type="text",
-            prompt=self.prompt,
-            url=self.url,
-        )
+        empty_result = {
+            "content": "",
+            "format_type": "text",
+            "prompt": self.prompt,
+            "url": self.url,
+            "summary": "",
+        }
+        empty_result["task_template"] = self.task_template
 
-        result_dict = empty_result.model_dump()
-        result_dict["task_template"] = self.task_template
-
-        return result_dict
+        return empty_result

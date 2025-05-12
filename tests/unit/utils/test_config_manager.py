@@ -26,15 +26,16 @@ def temp_config_dir():
             yaml.dump(test_config, f)
             
         # Create a test secrets file
-        test_secrets = {
-            "secrets": {
-                "api_key": "test_api_key"
+        secrets = {
+            'llms': {
+                "api_key": "test_api_key",
+                "db_password": "test_password"
             }
         }
         
         secrets_path = Path(temp_dir) / "secrets.yaml"
         with open(secrets_path, 'w') as f:
-            yaml.dump(test_secrets, f)
+            yaml.dump(secrets, f)
             
         yield temp_dir
 
@@ -60,13 +61,14 @@ def test_config_manager_get(temp_config_dir):
 def test_config_manager_get_secret(temp_config_dir):
     """Test retrieving secrets with environment variable fallback."""
     config_manager = ConfigManager(config_dir=temp_config_dir)
+    print(temp_config_dir)
     
     # Test getting a secret from the file
-    assert config_manager.get_secret("secrets.api_key") == "test_api_key"
+    assert config_manager.get_secret("secrets.llms.api_key") == "test_api_key"
     
     # Test environment variable override
     os.environ["TEST_API_KEY"] = "env_api_key"
-    assert config_manager.get_secret("secrets.api_key", "TEST_API_KEY") == "env_api_key"
+    assert config_manager.get_secret("secrets.llms.api_key", "TEST_API_KEY") == "env_api_key"
     
     # Clean up environment
     del os.environ["TEST_API_KEY"]

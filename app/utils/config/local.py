@@ -53,14 +53,11 @@ def load_profile_config() -> bool:
     return True
 
 
-def build_content_model() -> Type[BaseModel]:
+def build_content_model(content_structure) -> Type[BaseModel]:
     """
     Parse the content format from the configuration and return the corresponding model.
     """
-    # First check for content structure in profile if it exists
-    content_structure = config_manager.get("profile.content_structure")
-
-    # Fall back to basic content structure if not found in profile
+    # Fall back to basic content structure if content_structure is not provided
     if not content_structure:
         return create_model(
             "TextContent", 
