@@ -5,7 +5,8 @@ pydantic>=2.10.6
 PyYAML>=6.0.2
 
 # Core dependencies - brightdata mcp
-
+langgraph>=0.4.1
+langchain-mcp-adapters>=0.0.9
 
 # Web scraping utilities
 beautifulsoup4>=4.13.4

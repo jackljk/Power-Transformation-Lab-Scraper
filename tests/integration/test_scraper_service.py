@@ -60,12 +60,12 @@ def mock_agent(mock_browser_context):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_scraper_init():
+async def test_browser_use_scraper_init():
     """Test WebScraper initialization."""
-    with patch('app.services.scraper.get_llm_instance') as mock_get_llm:
-        with patch('app.services.scraper.define_browser_use_context_config') as mock_define_config:
-            with patch('app.services.scraper.Controller') as mock_controller_class:
-                with patch('app.services.scraper.Agent') as mock_agent_class:
+    with patch('app.services.browser_use_scraper.get_llm_instance') as mock_get_llm:
+        with patch('app.services.browser_use_scraper.define_browser_use_context_config') as mock_define_config:
+            with patch('app.services.browser_use_scraper.Controller') as mock_controller_class:
+                with patch('app.services.browser_use_scraper.Agent') as mock_agent_class:
                     with patch('app.models.output_format_models') as mock_output_model:
                         # Setup mocks
                         mock_get_llm.return_value = MagicMock()

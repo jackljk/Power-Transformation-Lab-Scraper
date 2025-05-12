@@ -2,6 +2,6 @@
 # ---------------------------------------------------
 brightdata_mcp:
   # config for the bright data web unlocker mcp for web scraping
-  web_unlocker_zone: "your-web-unlocker-zone"
-  browser_auth: "your-browser-auth"
+  web_unlocker_zone: "powerlab_scraper"
+  browser_auth: "brd-customer-hl_7f867824-zone-powerlab_scraping_browser:llc73h52940w"
   

@@ -5,14 +5,12 @@ from app.models.llm_models import get_llm_instance
 from app.utils.config.brightdata_mcp import define_mcp_server_params
 from app.templates.mcp_rule_templates import MCP_TEMPLATES  
 
-from mcp import ClientSession, StdioServerParameters
+from mcp import ClientSession
 from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langgraph.prebuilt import create_react_agent
-from langchain_anthropic import ChatAnthropic
-from dotenv import load_dotenv
 import asyncio
-import os
+import json
 
 class BrightDataMCPScraper:
     """
@@ -55,15 +53,18 @@ class BrightDataMCPScraper:
         self.url = url
         self.prompt = prompt
         self.task_template = task_template
-        self.output_format = output_format
+        self.output_format = json.dumps(output_format, indent=4)
         
         # Get the LLM instance for mcp scraping
         self.llm = get_llm_instance()
         
+        # get the mcp server parameters
         self.server_params = define_mcp_server_params()
 
+        # init the content for the MCP scraper
+        self._init_content()
 
-    async def scrape(self, url: str) -> Dict[str, Any]:
+    async def scrape(self) -> Dict[str, Any]:
         async with stdio_client(self.server_params) as (read, write):
             async with ClientSession(read, write) as session:
                 # Load the tools for the MCP agent
@@ -71,9 +72,7 @@ class BrightDataMCPScraper:
                 
                 # Create the MCP agent
                 agent = create_react_agent(
-                    llm=self.llm,
-                    tools=tools,
-                    verbose=True,
+                    self.llm, tools
                 )
                 
                 messages = [
@@ -83,12 +82,28 @@ class BrightDataMCPScraper:
                     },
                     {
                         "role": "user",
-                        'content': self.task_string
+                        'content': self.content
                     },
                 ]
                 
                 # Run the agent with the task string and URL
-                response = await agent.ainvoke(self.task_string, url)
+                response = await agent.ainvoke({
+                    'messages': messages,
+                })
                 
                 
                 return response
+
+    def _init_content(self):
+        """
+        Initialize the content for the MCP scraper.
+        - Combines the prompts, url, and additional context into a single string.
+        - This string is used to create the task/message for the MCP agent.
+        """
+        self.content = f"""
+        URL: {self.url}
+        Prompt: {self.prompt}
+        Additional content: {self.additional_context}
+        Output format: {self.output_format}
+        """
+        

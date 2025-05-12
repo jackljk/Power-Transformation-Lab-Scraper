@@ -20,11 +20,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ignore resource warnings
-warnings.filterwarnings("ignore", category=ResourceWarning)
-# Use WindowsSelectorEventLoopPolicy for Windows
-if os.name == "nt":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+# # ignore resource warnings
+# warnings.filterwarnings("ignore", category=ResourceWarning)
+# # Use WindowsSelectorEventLoopPolicy for Windows
+# if os.name == "nt":
+#     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def scrape_url(
     scraper_type: str, # ["browser_use", "bright_data_mcp"]
@@ -71,7 +71,6 @@ async def scrape_url(
             logger.info("Using bright_data_mcp for scraping")
             logger.info(f"Scraping {url} for information about: {prompt}")
             
-            # TODO: Implement bright_data_mcp scraping logic
             scraper = BrightDataMCPScraper(
                 url=url,
                 prompt=prompt,
@@ -134,8 +133,22 @@ async def main():
             
         logging.info(f"Scraping completed successfully. Results saved to {results_path}")
     except Exception as e:
-        logger.error(f"Error during scraping: {str(e)}")
-        raise
+        # logger.error(f"Error during scraping: {str(e)}")
+        # raise
+        # save what ever the result is to an output file
+        results_env = os.getenv("RESULTS_PATH")
+        if not results_env:
+            logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
+            return
+        # does just as a txt file
+        results_path = os.path.join(results_env, "output.txt")
+        # create the directory if it doesn't exist
+        os.makedirs(os.path.dirname(results_path), exist_ok=True)
+        with open(results_path, "w") as f:
+            f.write(str(e))
+            f.write("\n")
+            f.write("Scraping failed. Please check the logs for more details.\n Here is the output of the scraper:\n")
+            f.write(str(result))
     finally:
         # Clean up any resources if needed
         await cleanup_resources()

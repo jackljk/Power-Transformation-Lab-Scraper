@@ -111,8 +111,8 @@ def parse_local_config(available_templates: list) -> dict:
     # Get required configuration
     url = get_config("url")
     prompt = get_config("prompt")
-
-    # Validate required configuration
+    scraper_type = config_manager.get("local.scraper_type")
+    
     if not url:
         logger.error("URL is required in profile configuration (profile.scraper.url)")
         return {}
@@ -120,6 +120,12 @@ def parse_local_config(available_templates: list) -> dict:
     if not prompt:
         logger.error(
             "Prompt is required in profile configuration (profile.scraper.prompt)"
+        )
+        return {}
+    
+    if not scraper_type:
+        logger.error(
+            "Scraper type is required in profile configuration (profile.scraper.scraper_type)"
         )
         return {}
     
@@ -185,6 +191,7 @@ def parse_local_config(available_templates: list) -> dict:
     # Return all configuration values
     return {
         "url": url,
+        "scraper_type": scraper_type,
         "prompt": prompt_res,
         "task_template": task_template,
         "additional_context": additional_context,
