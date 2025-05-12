@@ -92,7 +92,7 @@ def parse_local_config(available_templates: list) -> dict:
     Returns:
         dict: Dictionary of configuration values
     """
-    from ..config.agent import DEBUG_MODE
+    from .browser_use_agent import DEBUG_MODE
 
     # Helper function to get config with profile fallback
     def get_config(key, default=None):

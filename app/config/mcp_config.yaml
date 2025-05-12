@@ -1,0 +1,7 @@
+# MCP server configurations
+# ---------------------------------------------------
+brightdata_mcp:
+  # config for the bright data web unlocker mcp for web scraping
+  web_unlocker_zone: "your-web-unlocker-zone"
+  browser_auth: "your-browser-auth"
+  

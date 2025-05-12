@@ -6,7 +6,7 @@ import logging
 from .config_manager import config_manager
 
 # Import configuration components from individual modules
-from .config.agent import (
+from .config.browser_use_agent import (
     USE_VISION,
     SAVE_CONVERSATION_PATH,
     RUN_MAX_STEPS,

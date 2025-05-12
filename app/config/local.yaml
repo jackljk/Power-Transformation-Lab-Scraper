@@ -6,3 +6,18 @@ profile: "wikipedia_extraction"
 
 # Output path for the scraper (FULL PATH)
 output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"
+
+scraper_type: 'bright_data_mcp' # options: bright_data_mcp, browser-use
+
+
+# Usage/configuration to change for each scraper type
+# All scrapers use LLMs for planning and execution for be sure to configure the LLMs
+# All secret keys are stored in the secrets directory goto app/config/secrets-example.yaml to see the format and (README for more details)
+
+# mcp:
+# - Go to config/mcp_config.yaml to change the mcp server configurations
+#   - currently only supports bright-data-mcp which requires a web unlocker zone and browser auth (README for more details)
+
+# browser-use:
+# - Go to config/browser_config.yaml to change the browser configurations for browser-use
+# - Go to config/agent_config.yaml to change the agent configurations for browser-use

@@ -13,7 +13,6 @@ from app.utils.config.browser_use_agent import RUN_MAX_STEPS, PLANNER_INTERVAL, 
 from app.services.browser_use_scraper_hooks import save_page_content
 
 
-
 class WebScraper:
     """
     A web scraper class that uses browser-use to extract targeted information

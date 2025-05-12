@@ -1,8 +1,11 @@
-# Core dependencies
+# Core dependencies - Browser-use
 browser-use>=0.1.41
 python-dotenv>=1.1.0
 pydantic>=2.10.6
 PyYAML>=6.0.2
+
+# Core dependencies - brightdata mcp
+
 
 # Web scraping utilities
 beautifulsoup4>=4.13.4

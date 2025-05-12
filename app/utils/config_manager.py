@@ -83,7 +83,6 @@ class ConfigManager:
             The configuration value or the default if not found
         """
         parts = path.split('.')
-        print(self.configs)
         # First part should be the config file name
         if parts[0] not in self.configs:
             return default
@@ -124,10 +123,8 @@ class ConfigManager:
             The secret value or None if not found
         """
         # Check environment variable first (highest priority)
-        print(env_var)
         if env_var and env_var in os.environ:
             return os.environ[env_var]
-        print(path)
         # Try the secrets file next
         return self.get(path, None)
 

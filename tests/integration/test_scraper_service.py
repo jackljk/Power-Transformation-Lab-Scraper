@@ -3,7 +3,7 @@ import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 import json
 
-from app.services.scraper import WebScraper
+from app.services.browser_use_scraper import WebScraper
 from app.models.output_format_models import build_output_model
 
 
