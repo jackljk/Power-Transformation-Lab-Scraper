@@ -7,7 +7,7 @@ MCP_TEMPLATES = {
         1. The url is followed be "URL:"
         2. The prompt is followed by "PROMPT:"
         3. There can be additional context provided in the "ADDITIONAL CONTEXT" section.
-        4. The output format is provided in the "OUTPUT FORMAT" section.
+        4. The output format is provided in the "OUTPUT FORMAT" section. (Can ignore indentation for json)
         
         You must follow these instructions:
         1. You can use mutliple tools in sequence to achieve the goal. 

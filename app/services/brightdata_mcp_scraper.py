@@ -53,7 +53,9 @@ class BrightDataMCPScraper:
         self.url = url
         self.prompt = prompt
         self.task_template = task_template
-        self.output_format = json.dumps(output_format, indent=4)
+        self.output_format = {
+            content: [items] for content, items in output_format.items()
+        }
         
         # Get the LLM instance for mcp scraping
         self.llm = get_llm_instance()
@@ -91,8 +93,12 @@ class BrightDataMCPScraper:
                     'messages': messages,
                 })
                 
-                
-                return response
+                # return content only for now
+                results =  response['messages'][-1].content
+                results = results.replace("```json", "").replace("```", "")
+                # parse the results to the output format
+                results = json.loads(results)
+                return results
 
     def _init_content(self):
         """

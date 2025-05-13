@@ -79,6 +79,7 @@ async def scrape_url(
                 output_format=content_structure
             )
             results = await scraper.scrape()
+            
             return results
         else:
             logger.error(f"Invalid scraper type: {scraper_type}")
@@ -119,7 +120,6 @@ async def main():
             task_template=local_config.get("task_template", "default"),
             initial_actions=local_config.get("initial_actions", []),
         )
-        
         # Format the result as JSON
         formatted_result = json.dumps(result, indent=2)
 
@@ -128,27 +128,14 @@ async def main():
             logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
             return
         results_path = os.path.join(results_env, "output.json")
+        os.makedirs(os.path.dirname(results_path), exist_ok=True)
         with open(results_path, "w") as f:
             f.write(formatted_result)
             
         logging.info(f"Scraping completed successfully. Results saved to {results_path}")
     except Exception as e:
-        # logger.error(f"Error during scraping: {str(e)}")
-        # raise
-        # save what ever the result is to an output file
-        results_env = os.getenv("RESULTS_PATH")
-        if not results_env:
-            logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
-            return
-        # does just as a txt file
-        results_path = os.path.join(results_env, "output.txt")
-        # create the directory if it doesn't exist
-        os.makedirs(os.path.dirname(results_path), exist_ok=True)
-        with open(results_path, "w") as f:
-            f.write(str(e))
-            f.write("\n")
-            f.write("Scraping failed. Please check the logs for more details.\n Here is the output of the scraper:\n")
-            f.write(str(result))
+        logger.error(f"Error during scraping: {str(e)}")
+        raise
     finally:
         # Clean up any resources if needed
         await cleanup_resources()
@@ -156,4 +143,13 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Scraping task was cancelled by user.")
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+    finally:
+        # Ensure cleanup if needed
+        asyncio.get_event_loop().close()
     
