@@ -22,7 +22,7 @@ scraper:
   # Additional context to help with scraping
   additional_context:
     format: "text"
-    value: "The information is presented in a table format in Chinese, the table contains the date, with the prices and month-month increase or decrease for 5500, 5000 and 4500 kcal coal prices. The table also has multiple pages, you may use the click feature to click on 下一页 (Next page) to navigate to the next page. Ensure the output is in English and the date is in YYYY-MM-DD format."
+    value: "The information is presented in a table format in Chinese, the table contains the date, with the prices and month-month increase or decrease for 5500, 5000 and 4500 kcal coal prices. The table also has multiple pages, you may use the click feature to click on (XPath=/html/body/div[8]/div[2]/div[3]/div[2]/div[1]/div[9]/div/div[4]/a[2]) to navigate to the next page. Ensure the output is in English and the date is in YYYY-MM-DD format."
 
   initial_actions:
     - scroll_down: 800

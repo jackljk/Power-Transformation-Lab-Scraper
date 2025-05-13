@@ -18,7 +18,7 @@ scraper:
       Image is located at XPATH='//*[@id="js_content"]/section[1]/section/section/section[2]/img'
   
   # Additional context to help with scraping
-  context:
+  additional_context:
     format: "text"
     value: "NA"
   

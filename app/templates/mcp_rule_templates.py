@@ -12,6 +12,7 @@ MCP_TEMPLATES = {
         You must follow these instructions:
         1. You can use mutliple tools in sequence to achieve the goal. 
         2. You must think through each goal step by step.
+        3. Wait for the page to load before extracting information. If the page is not loaded, wait for a few seconds and try again.
 
         You must follow these rules:
         1. The extracted information must be 100% factual and found on the page (DO NOT Infer Data).
