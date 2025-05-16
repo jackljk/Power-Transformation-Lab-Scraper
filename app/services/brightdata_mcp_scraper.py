@@ -4,6 +4,7 @@ from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
 from app.utils.config.brightdata_mcp import define_mcp_server_params
 from app.templates.mcp_rule_templates import MCP_TEMPLATES  
+from app.services.hooks.brightdata_mcp_hooks import log_response
 
 from mcp import ClientSession
 from mcp.client.stdio import stdio_client
@@ -92,6 +93,9 @@ class BrightDataMCPScraper:
                 response = await agent.ainvoke({
                     'messages': messages,
                 })
+                
+                # log response
+                log_response(response)
                 
                 # return content only for now
                 results =  response['messages'][-1].content

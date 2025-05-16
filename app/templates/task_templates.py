@@ -23,10 +23,10 @@ TASK_TEMPLATES = {
         1. Navigate to {url}
         2. Identify the table or structured data containing information about {data_points}
         3. Extract all rows and columns while preserving the relationship between data points
-        4. If pagination exists, navigate through at least the first {no_pages} pages and extract all data
-        5. If filters are available, apply {filters} before extraction
+        {no_pages}
+        {filters}
 
-        Format the extracted data in JSON format with appropriate headers following AgentOutput Format. If any data points are missing, mark them as "N/A" rather than leaving them blank.
+        Format the extracted data in JSON format with appropriate headers following AgentOutput Format. If any data points are missing, mark them as a null value rather than leaving them blank.
         """
     }
 }

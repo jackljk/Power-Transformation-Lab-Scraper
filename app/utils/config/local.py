@@ -7,7 +7,7 @@ import json
 import logging
 from pathlib import Path
 from pydantic import BaseModel, create_model, Field
-from typing import Type
+from typing import Type, Optional
 from ..config_manager import config_manager
 
 logger = logging.getLogger(__name__)
@@ -66,10 +66,10 @@ def build_content_model(content_structure) -> Type[BaseModel]:
         )
 
     type_map = {
-        "str": (str, ...),
-        "int": (int, ...),
-        "float": (float, ...),
-        "bool": (bool, ...),
+        "str": (Optional[str], None),
+        "int": (Optional[int], None),
+        "float": (Optional[float], None),
+        "bool": (Optional[bool], None),
     }
 
     model_name, fields = next(iter(content_structure.items()))
@@ -176,6 +176,13 @@ def parse_local_config(available_templates: list) -> dict:
                 parsed_initial_actions.append({action: {"amount": value}})
             elif "go_to_url" == action:
                 parsed_initial_actions.append({action: {"url": value}})
+            elif "click_element_by_index" == action:
+                parsed_initial_actions.append({action: {
+                    "index": value.get("index"),
+                    "xpath": value.get("xpath"),
+                }})
+            elif "click_by_xpath" == action:
+                parsed_initial_actions.append({action: {"xpath": value}})
             else:
                 logger.warning(f"Unknown action: {action}. Skipping.")
                 continue

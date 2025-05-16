@@ -1,6 +1,10 @@
 # secrets file
 app/config/secrets.yaml
 
+# ignore the /notebooks folder
+notebooks/
+
+
 # VSCode files
 .vscode/
 .vscode/settings.json

@@ -27,12 +27,26 @@ class Task(BaseModel):
                 prompt=prompt,
             )
         elif template_name == "tabular_extraction":
+            # handle filter
+            if prompt['filters'] is None:
+                filter = ""
+            else:
+                filter = f"5. If filters are available, apply {prompt["filters"]} before extraction"
+            
+            # handle no_pages
+            if prompt["no_pages"] == "all":
+                no_pages = "4. If pagination exists, navigate through all pages and extract all data"
+            elif isinstance(prompt["no_pages"], int):
+                no_pages = f"4. If pagination exists, navigate through at least the first {prompt['no_pages']} pages and extract all data"
+            else:
+                no_pages = "4. There should be no pagination"
+                
             task_str = template["task_format"].format(
                 website=prompt["website"],
                 data_category=prompt["data_category"],
                 data_points=prompt["data_points"],
-                no_pages=prompt["no_pages"],
-                filters=prompt["filters"],
+                no_pages= no_pages,
+                filters= filter,
                 url=prompt["url"],
             )
         

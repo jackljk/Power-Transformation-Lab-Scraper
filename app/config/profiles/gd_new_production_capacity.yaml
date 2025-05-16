@@ -1,0 +1,68 @@
+# Wikipedia Extraction Profile
+# --------------------------
+
+# name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
+name: "gd_new_production_capacity"
+
+scraper:
+  # URL to scrape
+  url: "http://nit.pkthinker.com/third/#/data"
+  
+  # Information to extract
+  prompt: 
+    task_template: "tabular_extraction"
+    context:
+      website: "Power Generation Data"
+      data_category: "Power Generation Data (发电数据) - subitem - New production capacity (新增生产能力)"
+      data_points: "the power generate by different sources. \n This should include the following columns: \n 1. years (年份) \n 2.month (月份) \n 3. area (地区) \n 4. total power generation (合计) \n 5. Hydropower (水电) \n 6. Pumped Storage (抽水蓄能) \n 7.Thermal Power (火电) \n 8. Nuclear Power (核电) \n 9. Wind Power (风电) \n 10. Solar Power (太阳能)"
+      no_pages: 5 # use all to scrape all pages
+      filters: null
+
+  
+  # Additional context to help with scraping
+  additional_context:
+    format: "text"
+    value: |-
+      The information is presented in a table format in Chinese please extract the data from the table and return all information in English. 
+      To go to the next page click on XPath='//*[@id=\"pane-select\"]/div/div[3]/button[2]'. 
+      The sidebar is hard to navigate, hence to go to the subitem New production capacity (新增生产能力) click on XPath='/html/body/div[1]/div[1]/div/div[1]/div/div[2]/div[2]/div[2]/div[1]]'
+
+  initial_actions:
+    - click_by_xpath: "/html/body/div/div[1]/div/div[1]/div/div[2]/div[2]/div[2]/div[1]/div"
+    # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
+    # - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
+
+content_structure:
+  Power Generation Data - New production capacity:
+    years: int
+    month: int
+    area: str
+    total_power_generation: float
+    hydropower: float
+    pumped_storage: float
+    thermal_power: float
+    nuclear_power: float
+    wind_power: float
+    solar_power: float
+
+
+########################################################################
+# Optional: Specify the content structure for the scraper to use
+# content_structure:
+#   <content_type>:
+#     <field_name>: <data_type>
+#     <field_name>: <data_type>
+#
+# Example
+# content_structure:
+#   Film:
+#     title: str
+#     nominations: int
+#     awards_won: int
+#     best_picture: bool  # True if the film won the best picture award, False otherwise
+#########################################################################
+# Avalible Actions
+# - scroll_down: <pixels>  # Scroll down the page by a specified number of pixels
+# - scroll_up: <pixels>    # Scroll up the page by a specified number of pixels
+# - go_to_url: <url>  # Navigate to a specific URL

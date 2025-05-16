@@ -13,6 +13,12 @@ from app.utils.config.browser_use_agent import DEBUG_MODE
 from app.models.tasks_models import Task
 from app.utils.scraper_utils import cleanup_resources
 
+import tracemalloc
+tracemalloc.start()
+warnings.simplefilter("always", RuntimeWarning)
+
+
+
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG if DEBUG_MODE else logging.INFO,
@@ -46,14 +52,13 @@ async def scrape_url(
     Returns:
         A structured result containing the extracted information with citations
     """
-    from app.services.browser_use_scraper import WebScraper
-    from app.services.brightdata_mcp_scraper import BrightDataMCPScraper
     from app.models.output_format_models import build_output_model
     
     content_structure = config_manager.get("profile.content_structure")
     
     try:
         if scraper_type == "browser_use":
+            from app.services.browser_use_scraper import WebScraper
             logger.info("Using browser_use for scraping")
             logger.info(f"Scraping {url} for information about: {prompt}")
             
@@ -68,6 +73,7 @@ async def scrape_url(
             result = await scraper.scrape()
             return result
         elif scraper_type == "bright_data_mcp":
+            from app.services.brightdata_mcp_scraper import BrightDataMCPScraper
             logger.info("Using bright_data_mcp for scraping")
             logger.info(f"Scraping {url} for information about: {prompt}")
             
@@ -142,14 +148,11 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Scraping task was cancelled by user.")
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-    finally:
-        # Ensure cleanup if needed
-        asyncio.get_event_loop().close()
+
     

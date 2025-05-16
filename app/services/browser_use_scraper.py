@@ -1,18 +1,19 @@
 from typing import Union, Dict, Any, Optional, List
 from pydantic import BaseModel, ValidationError
 import json
+from browser_use import Browser
+import logging
 
 # Import browser-use for web scraping with AI
 from browser_use import Agent, Controller
 
 from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
-from app.models.output_format_models import build_output_model
 from app.utils.config.browser_use import define_browser_use_context_config
 from app.utils.config.browser_use_agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
-from app.services.browser_use_scraper_hooks import save_page_content
+from app.services.hooks.browser_use_scraper_hooks import save_page_content
 
-
+logger = logging.getLogger(__name__)
 class WebScraper:
     """
     A web scraper class that uses browser-use to extract targeted information
@@ -67,7 +68,7 @@ class WebScraper:
         self.browser_context, self.browser_config = define_browser_use_context_config()
 
         # Create a controller with our output model
-        self.controller = Controller(output_model=output_format)
+        self.controller = self._define_controller()
 
         # Initialize the browser-use agent with the controller
         self.agent = Agent(
@@ -84,6 +85,8 @@ class WebScraper:
             initial_actions=self.initial_actions,
             # browser-use config
             browser_context=self.browser_context,
+            # extra settings
+            use_vision=True
         )
 
     async def scrape(self) -> Dict[str, Any]:
@@ -135,6 +138,7 @@ class WebScraper:
 
             # Convert to the application's expected ScrapedResult format
             # processed_result = self._convert_to_scraped_result(structured_output)
+            await self.browser_context.close()
 
             return result_dict
         else:
@@ -186,4 +190,36 @@ class WebScraper:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.browser_context:
             await self.browser_context.close()
+            
+            
+    def _define_controller(self):
+        """
+        Define the controller for the browser-use agent.
+        """
+        # Create a controller with our output model
+        controller = Controller(output_model=self.output_format)
 
+        ######################################################
+        # Define custom functions that the agent can call
+        ######################################################
+        class ClickByXpathAction(BaseModel):
+                xpath: str
+        
+        @controller.action("click_by_xpath", param_model=ClickByXpathAction)
+        async def click_by_xpath(params: ClickByXpathAction, browser: Browser):
+            """
+            Click on an element by its XPath.
+            """
+            xpath = params.xpath
+            page = await browser.get_current_page()
+            item = page.locator(f"xpath={xpath}")
+            await item.evaluate("""
+                el => {
+                    el.style.outline = '3px solid red';
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            """)
+            await item.click()
+            logger.info(f"Clicked on element with XPath: {xpath}")
+            
+        return controller
