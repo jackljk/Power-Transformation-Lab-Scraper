@@ -14,8 +14,8 @@ scraper:
     context:
       website: "Power Generation Data"
       data_category: "Power Generation Data (发电数据) - subitem - New production capacity (新增生产能力)"
-      data_points: "the power generate by different sources. \n This should include the following columns: \n 1. years (年份) \n 2.month (月份) \n 3. area (地区) \n 4. total power generation (合计) \n 5. Hydropower (水电) \n 6. Pumped Storage (抽水蓄能) \n 7.Thermal Power (火电) \n 8. Nuclear Power (核电) \n 9. Wind Power (风电) \n 10. Solar Power (太阳能)"
-      no_pages: 5 # use all to scrape all pages
+      data_points: "the power generate by different sources. \n This should include the following columns: \n 1. years (年份) \n 2.month (月份) \n 3. area (地区) \n 4. total power generation (合计) \n 5. Hydropower (水电) \n 6. Pumped Storage (抽水蓄能) \n 7.Thermal Power (火电) \n 8. Nuclear Power (核电) \n 9. Wind Power (风电) \n 10. Solar Power (太阳能)" 
+      no_pages: 5 # use 'all' to scrape all pages
       filters: null
 
   
@@ -35,7 +35,7 @@ scraper:
 
 content_structure:
   Power Generation Data - New production capacity:
-    years: int
+    year: int
     month: int
     area: str
     total_power_generation: float

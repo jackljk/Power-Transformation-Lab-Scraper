@@ -11,7 +11,7 @@ from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
 from app.utils.config.browser_use import define_browser_use_context_config
 from app.utils.config.browser_use_agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
-from app.services.hooks.browser_use_scraper_hooks import save_page_content
+from app.services.hooks.browser_use_scraper_hooks import save_page_content, on_start_hook
 
 logger = logging.getLogger(__name__)
 class WebScraper:
@@ -33,6 +33,7 @@ class WebScraper:
         Initialize the WebScraper.
         """
         assert output_format, "Output format model is required"
+        assert url, "URL is required"
         
         # Convert additional_context to string format
         additional_context_str = (
@@ -97,7 +98,7 @@ class WebScraper:
             A structured result containing the extracted information with citations
         """
         # Run the agent to collect information
-        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_end=save_page_content)
+        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_start=on_start_hook, on_step_end=save_page_content)
 
         # Get the final result using the browser-use Controller
         result = history.final_result()

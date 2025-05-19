@@ -2,8 +2,10 @@ import asyncio
 import json
 import logging
 import os
+import sys
 from typing import Dict, Any, Optional
 import warnings
+import tracemalloc
 
 from app.utils.config.local import load_profile_config, parse_local_config
 from app.utils.config_manager import config_manager
@@ -13,7 +15,7 @@ from app.utils.config.browser_use_agent import DEBUG_MODE
 from app.models.tasks_models import Task
 from app.utils.scraper_utils import cleanup_resources
 
-import tracemalloc
+# Start memory tracking
 tracemalloc.start()
 warnings.simplefilter("always", RuntimeWarning)
 
@@ -34,8 +36,9 @@ logger = logging.getLogger(__name__)
 
 async def scrape_url(
     scraper_type: str, # ["browser_use", "bright_data_mcp"]
-    url: str,
     prompt: str,
+    url: Optional[str] = None,
+    filepath: Optional[str] = None,
     additional_context: Optional[Dict[str, Any]] = None,
     task_template: str = "default",
     initial_actions: Optional[Dict[str, Any]] = None,
@@ -87,6 +90,20 @@ async def scrape_url(
             results = await scraper.scrape()
             
             return results
+        elif scraper_type == "pdf_scraper":
+            from app.services.pdf_scraper import PDFScraper
+            logger.info("Using pdf_scraper for scraping")
+            logger.info(f"Scraping {url} for information about: {prompt}")
+            
+            scraper = PDFScraper(
+                pdf_paths=filepath,
+                prompt=prompt,
+                task_template=task_template,
+                additional_context=additional_context,
+                output_format=content_structure
+            )
+            result = await scraper.scrape()
+            return result
         else:
             logger.error(f"Invalid scraper type: {scraper_type}")
             raise ValueError(f"Invalid scraper type: {scraper_type}")
@@ -121,6 +138,7 @@ async def main():
         result = await scrape_url(
             scraper_type=local_config.get("scraper_type", "browser_use"),
             url=local_config.get("url"),
+            filepath=local_config.get("filepath", None),
             prompt=local_config.get("prompt"),
             additional_context=local_config.get("additional_context", None),
             task_template=local_config.get("task_template", "default"),
@@ -149,7 +167,30 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        # Use proper event loop handling for Windows
+        if sys.platform == 'win32':
+            # Use selector event loop to avoid ProactorEventLoop issues
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        try:
+            loop.run_until_complete(main())
+        finally:
+            # Properly close the event loop
+            pending_tasks = asyncio.all_tasks(loop)
+            for task in pending_tasks:
+                task.cancel()
+                
+            # Wait for all tasks to be cancelled
+            if pending_tasks:
+                loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
+            
+            # Close the loop properly
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+            
     except KeyboardInterrupt:
         logger.info("Scraping task was cancelled by user.")
     except Exception as e:

@@ -54,6 +54,7 @@ def get_llm_instance(planner=False) -> Any:
         params["num_ctx"] = 32000
         
     set_llm_environment_variables(provider, LLM_CONFIG["api_key"], LLM_CONFIG.get("endpoint", None))
+    logger.info(f"Using {provider} as LLM provider with model {LLM_CONFIG['model']}")
     
     return LLM_PROVIDERS[provider]["class"](**params)
 

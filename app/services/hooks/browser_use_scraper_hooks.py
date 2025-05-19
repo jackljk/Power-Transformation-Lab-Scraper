@@ -1,5 +1,5 @@
 import json
-from browser_use import Agent
+from browser_use import Agent, ActionResult
 from browser_use.agent.views import AgentHistoryList
 from typing import List, Tuple
 import os
@@ -41,7 +41,7 @@ async def save_page_content(agent: Agent) -> None:
     current_url, step = urls[-1], len(urls)
 
     # Get the data from the trace file
-    trace_json, updated_trace_json = initialize_trace_logging(
+    trace_json, updated_trace_json = _initialize_trace_logging(
         history, trace_path, current_url, urls, step
     )
     webpage_number = updated_trace_json["url_to_webpage_number_mapper"][
@@ -93,7 +93,57 @@ async def save_page_content(agent: Agent) -> None:
     return
 
 
-def initialize_trace_logging(
+# async def on_start_hook(agent: Agent) -> None:
+#     """Hook to be called at the start of the agent.
+
+#     Args:
+#         agent (_type_): _description_
+
+#     Returns:
+#         ActionResult: _description_
+#     """
+#     page = await agent.browser_context.get_current_page()
+    
+#     # define function to handle all the network requests
+#     async def handle_request(route):
+#         # Get the response
+#         logger.info(f"Intercepting request: {route.request.url}")
+#         response = await route.fetch()
+        
+#         try:
+#             # Get response data
+#             body = await response.text()
+#             # determine if the response is a API response that returns JSON that could contain information for the prompt
+#             for header in response.headers:
+#                 if 'application/json' in response.headers[header].lower():
+#                     # return the response as action result content to the agent with the url for the agent to inpect and possibly use to expose all the data we are interested in
+#                     content = f"""
+#                         Network request intercepted: {route.request.url} with possible JSON content related to the prompt.
+                        
+#                         Response: {body} 
+                        
+#                         Plan:
+#                             1. Determine if the content is useful for the prompt
+#                             2. If so, determine if the URL could be exploited to extract more data
+#                             3. If so, add the URL to the list of URLs to scrape and plan to scrape the data using the API call instead of the webpage
+#                             4. If not, ignore the response and continue with the next step.
+#                     """
+                    
+#                     # add the content as a new HumanMessage to the agent to process by using "add plan"
+#                     agent._message_manager.add_plan(content, position=-1)
+                    
+#             # else return nothing as there is no useful json content
+#         except Exception as e:
+#             print(f"Error processing response: {e}")
+            
+#         finally:
+#             # Continue the request
+#             await route.continue_()
+    
+#     # Route all network requests through handler
+#     await page.route("**/*", handle_request)
+
+def _initialize_trace_logging(
     history: AgentHistoryList,
     trace_path: str,
     current_url: str,

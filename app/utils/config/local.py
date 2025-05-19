@@ -109,12 +109,17 @@ def parse_local_config(available_templates: list) -> dict:
         return value if value is not None else default
 
     # Get required configuration
-    url = get_config("url")
+    url = get_config("url", None)
+    filepath = get_config("filepath", None)
     prompt = get_config("prompt")
     scraper_type = config_manager.get("local.scraper_type")
     
-    if not url:
+    if not url and scraper_type in ["browser_use", "bright_data_mcp"]:
         logger.error("URL is required in profile configuration (profile.scraper.url)")
+        return {}
+    
+    if not filepath and 'pdf' in scraper_type:
+        logger.error("Filepath is required in profile configuration (profile.scraper.filepath)")
         return {}
 
     if not prompt:
@@ -131,7 +136,7 @@ def parse_local_config(available_templates: list) -> dict:
     
     # parse the prompt
     task_template = get_config("prompt.task_template")
-    if task_template == "default":
+    if 'default' in task_template:
         prompt_res = get_config("prompt.text")
     elif task_template == "tabular_extraction":
         prompt_res = {
@@ -198,6 +203,7 @@ def parse_local_config(available_templates: list) -> dict:
     # Return all configuration values
     return {
         "url": url,
+        "filepath": filepath,
         "scraper_type": scraper_type,
         "prompt": prompt_res,
         "task_template": task_template,

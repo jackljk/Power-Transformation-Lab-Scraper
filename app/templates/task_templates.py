@@ -28,7 +28,16 @@ TASK_TEMPLATES = {
 
         Format the extracted data in JSON format with appropriate headers following AgentOutput Format. If any data points are missing, mark them as a null value rather than leaving them blank.
         """
-    }
+    },
+    "pdf_default": {
+        "task_format": """
+        From the provided PDF, extract information about: "{prompt}"
+
+        Requirements:
+        1. The extracted information must be 100% factual and found on the page (DO NOT Infer Data).
+        2. Only include information that is relevant to the prompt.
+        """
+    },
 }
 
 def get_task_template(template_name: str = "default") -> Dict[str, str]:
