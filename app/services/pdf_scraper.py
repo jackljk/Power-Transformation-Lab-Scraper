@@ -107,10 +107,9 @@ class PDFScraper:
             
             # Parse the JSON response if output_format was specified
             if self.output_format:
-                # Handle case where response might be wrapped in markdown code blocks
-                cleaned_response = response.replace("```json", "").replace("```", "").strip()
-                
                 try:
+                    # Handle case where response might be wrapped in markdown code blocks
+                    cleaned_response = response.replace("```json", "").replace("```", "").strip()
                     # Parse the JSON response
                     results = json.loads(cleaned_response)
                     return results
@@ -119,7 +118,14 @@ class PDFScraper:
                     logger.warning("Failed to parse JSON response, attempting to fix with LLM")
                     fixed_json = self._fix_json_with_llm(cleaned_response)
                     return fixed_json
-            
+                except AttributeError:
+                    # Handle case where response is already a dictionary
+                    if isinstance(response, dict):
+                        return response
+                    else:
+                        logger.error("Unexpected response format, unable to parse. Returning raw response.")
+                        logger.error(f"Response content: {response}")
+                        return {"error": "Unexpected response format", "content": response}
             # Return the raw response if no output format was specified
             return {"content": response}
             
