@@ -2,16 +2,17 @@ from typing import Union, Dict, Any, Optional, List
 from pydantic import BaseModel, ValidationError
 import json
 from browser_use import Browser
+import os
 import logging
 
 # Import browser-use for web scraping with AI
-from browser_use import Agent, Controller
+from browser_use import Agent, Controller, ActionResult
 
 from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
 from app.utils.config.browser_use import define_browser_use_context_config
 from app.utils.config.browser_use_agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
-from app.services.hooks.browser_use_scraper_hooks import save_page_content, on_start_hook
+from app.services.hooks.browser_use_scraper_hooks import save_page_content
 
 logger = logging.getLogger(__name__)
 class WebScraper:
@@ -98,7 +99,7 @@ class WebScraper:
             A structured result containing the extracted information with citations
         """
         # Run the agent to collect information
-        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_start=on_start_hook, on_step_end=save_page_content)
+        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_end=save_page_content)
 
         # Get the final result using the browser-use Controller
         result = history.final_result()
@@ -222,5 +223,46 @@ class WebScraper:
             """)
             await item.click()
             logger.info(f"Clicked on element with XPath: {xpath}")
+            
+            
+        #######################################################
+        class ParsePDFAction(BaseModel):
+            prompt: str
+            download_path: str
+            
+        @controller.action("Parse Relevant Information From Downloaded PDF", param_model=ParsePDFAction)
+        async def parse_pdf(params: ParsePDFAction, browser: Browser):
+            download_path = params.download_path
+            prompt = params.prompt
+            logger.info(f"Parsing PDF at {download_path} with prompt: {prompt}")
+            # check if the file exists
+            if not os.path.exists(download_path):
+                logger.error(f"PDF file does not exist at {download_path}")
+                return ActionResult(
+                    extracted_content=f"PDF file does not exist at {download_path}",
+                    include_in_memory=True,
+                )
+            # use the pdf parser to extract 
+            from app.services.pdf_scraper import PDFScraper
+            pdf_scraper = PDFScraper(
+                pdf_paths=download_path,
+                prompt=prompt,
+                task_template="default",
+                additional_context=None,
+                output_format=self.output_format
+            )
+            result = await pdf_scraper.scrape()
+            logger.info(f"Parsed PDF result: {result}")
+            msg = "Parsed PDF extracted data result from PDF Scraper has results based on the prompt provided. Ensure the extracted content is relevant to the task"
+            if result.isinstance(str):
+                msg = msg + f"\n {result}"
+            else:
+                result = json.dumps(result, indent=2)
+                msg = msg + f"\n {result}"
+            return ActionResult(
+                extracted_content=msg,
+                include_in_memory=True,
+            )
+            
             
         return controller

@@ -2,12 +2,12 @@
 # --------------------------
 
 # Profile to use (loads complete configuration from profiles directory)
-profile: "energy_validation"
+profile: "energy_validation_website"
 
 # Output path for the scraper (FULL PATH)
 output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"
 
-scraper_type: 'pdf_scraper' # options: bright_data_mcp, browser-use
+scraper_type: 'browser_use' # options: bright_data_mcp, browser-use
 
 
 # Usage/configuration to change for each scraper type

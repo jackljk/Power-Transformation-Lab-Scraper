@@ -28,11 +28,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# # ignore resource warnings
-# warnings.filterwarnings("ignore", category=ResourceWarning)
-# # Use WindowsSelectorEventLoopPolicy for Windows
-# if os.name == "nt":
-#     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def scrape_url(
     scraper_type: str, # ["browser_use", "bright_data_mcp"]
@@ -149,7 +144,7 @@ async def main():
 
         results_env = os.getenv("RESULTS_PATH")
         if not results_env:
-            logging.error("RESULTS_PATH environment variable is not set. Skipping page content saving.")
+            logging.error("RESULTS_PATH environment variable is not set. Please set it to save the results.")
             return
         results_path = os.path.join(results_env, "output.json")
         os.makedirs(os.path.dirname(results_path), exist_ok=True)
@@ -166,34 +161,35 @@ async def main():
 
 
 if __name__ == "__main__":
-    try:
-        # Use proper event loop handling for Windows
-        if sys.platform == 'win32':
-            # Use selector event loop to avoid ProactorEventLoop issues
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.run(main())
+    # try:
+    #     # Use proper event loop handling for Windows
+    #     if sys.platform == 'win32':
+    #         # Use selector event loop to avoid ProactorEventLoop issues
+    #         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    #     loop = asyncio.new_event_loop()
+    #     asyncio.set_event_loop(loop)
         
-        try:
-            loop.run_until_complete(main())
-        finally:
-            # Properly close the event loop
-            pending_tasks = asyncio.all_tasks(loop)
-            for task in pending_tasks:
-                task.cancel()
+    #     try:
+    #         loop.run_until_complete(main())
+    #     finally:
+    #         # Properly close the event loop
+    #         pending_tasks = asyncio.all_tasks(loop)
+    #         for task in pending_tasks:
+    #             task.cancel()
                 
-            # Wait for all tasks to be cancelled
-            if pending_tasks:
-                loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
+    #         # Wait for all tasks to be cancelled
+    #         if pending_tasks:
+    #             loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
             
-            # Close the loop properly
-            loop.run_until_complete(loop.shutdown_asyncgens())
-            loop.close()
+    #         # Close the loop properly
+    #         loop.run_until_complete(loop.shutdown_asyncgens())
+    #         loop.close()
             
-    except KeyboardInterrupt:
-        logger.info("Scraping task was cancelled by user.")
-    except Exception as e:
-        logger.error(f"An error occurred: {str(e)}")
+    # except KeyboardInterrupt:
+    #     logger.info("Scraping task was cancelled by user.")
+    # except Exception as e:
+    #     logger.error(f"An error occurred: {str(e)}")
 
     
