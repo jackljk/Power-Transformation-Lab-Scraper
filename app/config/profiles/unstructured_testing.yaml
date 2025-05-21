@@ -1,0 +1,67 @@
+# Wikipedia Extraction Profile
+# --------------------------
+
+# name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
+name: "unstructured_testing"
+
+scraper:
+  # URL to scrape
+  url: "https://news.bjx.com.cn/html/20250516/1441844.shtml"
+  
+  # Information to extract
+  prompt: 
+    task_template: "default"
+    text: |-
+      Extract information on new power projects being developed in China by interpreting each post on the website.
+
+      For each post extract the following information:
+      - Project_Name
+      - Project_Location
+      - Project_Size
+      - Posted_Date
+      - Other Notes
+
+  
+  # Additional context to help with scraping
+  additional_context:
+    format: "text"
+    value: |-
+      Some extra information to help understand the website:
+      - The information is presented in Chinese please extract the information and return all data collected in English. 
+      - There are 3 pages, with navigations located at the bottom of the page 
+
+
+  initial_actions:
+    # - click_by_xpath: "/html/body/div/div[1]/div/div[1]/div/div[2]/div[2]/div[2]/div[1]/div"
+    # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
+    # - scroll_down: 4000
+    # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
+
+content_structure:
+  Power_Projects:
+   Project_Name: str
+   Project_Location: str
+   Project_Size: str
+   Posted_Date: str
+   Other_Notes: str
+
+
+########################################################################
+# Optional: Specify the content structure for the scraper to use
+# content_structure:
+#   <content_type>:
+#     <field_name>: <data_type>
+#     <field_name>: <data_type>
+#
+# Example
+# content_structure:
+#   Film:
+#     title: str
+#     nominations: int
+#     awards_won: int
+#     best_picture: bool  # True if the film won the best picture award, False otherwise
+#########################################################################
+# Avalible Actions
+# - scroll_down: <pixels>  # Scroll down the page by a specified number of pixels
+# - scroll_up: <pixels>    # Scroll up the page by a specified number of pixels
+# - go_to_url: <url>  # Navigate to a specific URL
