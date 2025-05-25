@@ -2,49 +2,42 @@
 # --------------------------
 
 # name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
-name: "unstructured_testing"
+name: "energy_validation"
 
 scraper:
   # URL to scrape
-  url: "https://news.bjx.com.cn/html/20250516/1441844.shtml"
+  url: null
+  # filepath to pdf
+  filepath: "data/energy_validation.pdf"
   
   # Information to extract
   prompt: 
-    task_template: "default"
+    task_template: "pdf_default"
     text: |-
-      Extract information on new power projects being developed in China by interpreting each post on the website.
-
-      For each post extract the following information:
-      - Project_Name
-      - Project_Location
-      - Project_Size
-      - Posted_Date
-      - Other Notes
+      Extract the data about " publicly available reanalysis datasets and the parameters most relevant to wind power synthesis" from the table in the PDF
 
   
   # Additional context to help with scraping
   additional_context:
     format: "text"
     value: |-
-      Some extra information to help understand the website:
-      - The information is presented in Chinese please extract the information and return all data collected in English. 
-      - There are 3 pages, with navigations located at the bottom of the page 
-
+      The pdf is parsed as a Markdown file before being passed to the model.
+      If encountering a character, uses utf-8 encoding to type the character.
 
   initial_actions:
-    # - click_by_xpath: "/html/body/div/div[1]/div/div[1]/div/div[2]/div[2]/div[2]/div[1]/div"
     # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
     # - scroll_down: 4000
     # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
 
 content_structure:
-  Power_Projects:
-   Project_Name: str
-   Project_Location: str
-   Project_Size: str
-   Posted_Date: str
-   Other_Notes: str
-
+  Table-1:
+    Institution/Model: str
+    Released: str
+    Coverage: str
+    Spatial_Resolution: str
+    Time_Resolution: str
+    Wind_speed_heights: str
+    Other_model_heights: str
 
 ########################################################################
 # Optional: Specify the content structure for the scraper to use

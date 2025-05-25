@@ -23,7 +23,7 @@ browser:
   
   # Recording and tracing paths (optional) Null values indicate don't save/record
   recordings:
-    save_path: null # True/False to save recordings
+    save_path: false # True/False to save recordings
     trace_path: null # True/False to save traces (browser_use traces)
 
 # Application-wide settings (moved from .env)
