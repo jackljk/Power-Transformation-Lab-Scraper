@@ -1,0 +1,116 @@
+{
+    "profile_name": "Secure Document Processing",
+    "description": "Advanced PDF processing with security features, batch processing, and sensitive data handling",
+    "scraper_type": "pdf",
+    "target_sources": ["encrypted_documents", "batch_upload"],
+    "task_prompt": "Process confidential documents with security measures, extract sensitive information while maintaining data privacy, and handle encrypted PDFs.",
+    "output_format": {
+        "document_metadata": {
+            "file_name": "Original filename",
+            "file_size": "File size in bytes",
+            "page_count": "Number of pages",
+            "creation_date": "Document creation date",
+            "modification_date": "Last modified date",
+            "security_level": "Document security classification",
+            "encryption_status": "Encryption details"
+        },
+        "extracted_content": {
+            "executive_summary": "Document summary",
+            "key_sections": [
+                {
+                    "section_title": "Section name",
+                    "content": "Section content",
+                    "sensitivity_level": "low|medium|high|confidential",
+                    "redacted_content": "Content with sensitive data redacted"
+                }
+            ],
+            "data_tables": [
+                {
+                    "table_name": "Table identifier",
+                    "headers": ["Column headers"],
+                    "data": "Table data with sensitive fields masked",
+                    "sensitive_columns": ["Columns containing sensitive data"]
+                }
+            ],
+            "entities": {
+                "people": ["Extracted person names"],
+                "organizations": ["Company/organization names"],
+                "locations": ["Geographic locations"],
+                "financial_data": ["Financial figures (anonymized)"],
+                "dates": ["Important dates"]
+            }
+        },
+        "security_analysis": {
+            "pii_detected": ["Types of PII found"],
+            "sensitive_data_locations": ["Page numbers with sensitive content"],
+            "redaction_applied": "Whether redaction was applied",
+            "compliance_check": "Regulatory compliance assessment"
+        }
+    },
+    "task_template": "pdf",
+    "scraper_kwargs": {
+        "security_config": {
+            "encryption_handling": {
+                "password_protected": true,
+                "certificate_based": true,
+                "key_store": "secure_vault"
+            },
+            "data_privacy": {
+                "pii_detection": true,
+                "auto_redaction": true,
+                "anonymization": true,
+                "data_classification": true
+            },
+            "access_control": {
+                "user_authentication": true,
+                "role_based_access": true,
+                "audit_logging": true
+            }
+        },
+        "processing_config": {
+            "batch_processing": {
+                "enabled": true,
+                "max_batch_size": 50,
+                "parallel_processing": 4,
+                "progress_tracking": true
+            },
+            "advanced_extraction": {
+                "ocr_fallback": true,
+                "layout_analysis": true,
+                "form_recognition": true,
+                "signature_detection": true
+            },
+            "quality_control": {
+                "extraction_confidence": 0.85,
+                "manual_review_threshold": 0.70,
+                "error_detection": true
+            }
+        },
+        "output_security": {
+            "encrypted_output": true,
+            "secure_storage": true,
+            "data_retention": 90,
+            "secure_deletion": true
+        }
+    },
+    "compliance": {
+        "regulations": ["GDPR", "HIPAA", "SOX"],
+        "data_handling": {
+            "encryption_at_rest": true,
+            "encryption_in_transit": true,
+            "key_management": "enterprise_hsm"
+        },
+        "audit_requirements": {
+            "access_logging": true,
+            "processing_logs": true,
+            "data_lineage": true,
+            "retention_tracking": true
+        }
+    },
+    "error_handling": {
+        "encrypted_document_failure": "secure_fallback",
+        "pii_detection_failure": "manual_review",
+        "extraction_errors": "quality_review",
+        "security_violations": "immediate_alert"
+    }
+}

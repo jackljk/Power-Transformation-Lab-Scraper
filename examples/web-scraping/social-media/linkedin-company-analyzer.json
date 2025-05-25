@@ -1,0 +1,91 @@
+{
+    "profile_name": "LinkedIn Company Profile Analyzer",
+    "description": "Extracts comprehensive company information from LinkedIn company pages including employee insights, recent updates, and company details",
+    "scraper_type": "browser_use",
+    "target_url": "https://www.linkedin.com/company/{company_name}",
+    "task_prompt": "Extract detailed company information including company overview, employee count, industry details, recent posts, follower count, and key employee profiles. Focus on publicly available information.",
+    "output_format": {
+        "company_info": {
+            "name": "Official company name",
+            "tagline": "Company tagline or slogan",
+            "description": "Company description",
+            "industry": "Primary industry",
+            "company_size": "Employee count range",
+            "headquarters": "Company headquarters location",
+            "founded": "Year founded",
+            "website": "Company website URL",
+            "specialties": ["Company specialties/focus areas"]
+        },
+        "social_metrics": {
+            "followers": "Number of LinkedIn followers",
+            "employee_count_linkedin": "Employees with LinkedIn profiles",
+            "recent_growth": "Recent follower growth indicator"
+        },
+        "recent_activity": [
+            {
+                "post_type": "update|article|job_posting|event",
+                "content": "Post content summary",
+                "engagement": {
+                    "likes": "Number of likes",
+                    "comments": "Number of comments",
+                    "shares": "Number of shares"
+                },
+                "timestamp": "Post publication time"
+            }
+        ],
+        "employee_insights": {
+            "key_employees": [
+                {
+                    "name": "Employee name",
+                    "title": "Job title",
+                    "profile_url": "LinkedIn profile URL"
+                }
+            ],
+            "departments": ["Major departments represented"],
+            "recent_hires": "Information about recent hiring activity"
+        },
+        "company_updates": [
+            {
+                "type": "announcement|news|milestone",
+                "title": "Update title",
+                "summary": "Update summary",
+                "date": "Update date"
+            }
+        ]
+    },
+    "task_template": "default",
+    "scraper_kwargs": {
+        "browser_type": "chromium",
+        "headless": false,
+        "viewport": {"width": 1366, "height": 768},
+        "timeout": 45000,
+        "wait_for_load_state": "networkidle",
+        "stealth_mode": true,
+        "extra_actions": [
+            "scroll_to_load_content",
+            "click_see_more_buttons",
+            "wait_for_dynamic_content"
+        ],
+        "session_management": {
+            "persist_cookies": true,
+            "cookie_file": "cookies/linkedin_session.json"
+        },
+        "rate_limiting": {
+            "delay_between_actions": [2000, 5000],
+            "respect_rate_limits": true
+        }
+    },
+    "compliance": {
+        "respect_robots_txt": true,
+        "terms_of_service": "Ensure compliance with LinkedIn ToS",
+        "data_usage": "Public information only",
+        "rate_limiting": "Conservative scraping approach"
+    },
+    "output_options": {
+        "save_screenshots": true,
+        "save_html": false,
+        "include_metadata": true,
+        "anonymize_personal_data": true
+    },
+    "notes": "This profile respects LinkedIn's terms of service by only extracting publicly available information. Ensure you have proper authentication if required and follow rate limiting guidelines."
+}

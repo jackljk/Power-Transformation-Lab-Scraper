@@ -1,0 +1,79 @@
+{
+    "profile_name": "Financial Data Table Scraper",
+    "description": "Extracts tabular financial data from websites like Yahoo Finance, including stock prices, financial statements, and market data",
+    "scraper_type": "browser_use",
+    "target_url": "https://finance.yahoo.com/quote/{symbol}/financials",
+    "task_prompt": "Extract comprehensive financial data tables including income statements, balance sheets, cash flow statements, and key financial ratios. Organize data by time periods and ensure numerical accuracy.",
+    "output_format": {
+        "company_info": {
+            "symbol": "Stock ticker symbol",
+            "company_name": "Full company name",
+            "sector": "Business sector",
+            "industry": "Industry classification",
+            "market_cap": "Market capitalization",
+            "currency": "Reporting currency"
+        },
+        "income_statement": {
+            "periods": ["2023", "2022", "2021", "2020"],
+            "data": {
+                "total_revenue": [100000000, 95000000, 90000000, 85000000],
+                "gross_profit": [60000000, 57000000, 54000000, 51000000],
+                "operating_income": [25000000, 23000000, 21000000, 19000000],
+                "net_income": [15000000, 14000000, 13000000, 12000000],
+                "earnings_per_share": [2.50, 2.33, 2.17, 2.00]
+            }
+        },
+        "balance_sheet": {
+            "periods": ["2023", "2022", "2021", "2020"],
+            "data": {
+                "total_assets": [500000000, 480000000, 460000000, 440000000],
+                "total_liabilities": [200000000, 190000000, 180000000, 170000000],
+                "shareholders_equity": [300000000, 290000000, 280000000, 270000000],
+                "cash_and_equivalents": [50000000, 45000000, 40000000, 35000000]
+            }
+        },
+        "cash_flow": {
+            "periods": ["2023", "2022", "2021", "2020"],
+            "data": {
+                "operating_cash_flow": [30000000, 28000000, 26000000, 24000000],
+                "investing_cash_flow": [-10000000, -8000000, -6000000, -4000000],
+                "financing_cash_flow": [-5000000, -7000000, -9000000, -11000000],
+                "free_cash_flow": [20000000, 20000000, 20000000, 20000000]
+            }
+        },
+        "key_ratios": {
+            "pe_ratio": 15.5,
+            "price_to_book": 2.1,
+            "debt_to_equity": 0.67,
+            "return_on_equity": 0.05,
+            "profit_margin": 0.15
+        }
+    },
+    "task_template": "tabular",
+    "scraper_kwargs": {
+        "browser_type": "chromium",
+        "headless": true,
+        "viewport": {"width": 1920, "height": 1080},
+        "timeout": 30000,
+        "wait_for_load_state": "networkidle",
+        "extra_actions": [
+            "click_annual_tab",
+            "wait_for_table_load",
+            "expand_all_sections"
+        ],
+        "table_extraction": {
+            "method": "css_selector",
+            "selectors": [
+                "table[data-test='financials-table']",
+                "div[data-test='qsp-financial']"
+            ],
+            "header_detection": true,
+            "numeric_conversion": true
+        }
+    },
+    "data_validation": {
+        "numeric_fields": ["total_revenue", "net_income", "total_assets"],
+        "required_periods": 4,
+        "currency_normalization": true
+    }
+}

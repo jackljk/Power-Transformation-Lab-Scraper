@@ -1,0 +1,59 @@
+{
+    "profile_name": "Amazon Product Details Extractor",
+    "description": "Extracts detailed product information from Amazon product pages including price, ratings, reviews, and specifications",
+    "scraper_type": "browser_use",
+    "target_url": "https://www.amazon.com/dp/{product_id}",
+    "task_prompt": "Extract comprehensive product details including title, price, rating, number of reviews, key product features, specifications, and customer review highlights. Focus on factual information that would help in product comparison.",
+    "output_format": {
+        "product_title": "Full product name/title",
+        "current_price": "Current selling price with currency",
+        "original_price": "Original/MSRP price if different from current",
+        "discount_percentage": "Discount percentage if applicable",
+        "rating": "Average customer rating (e.g., 4.5/5)",
+        "total_reviews": "Total number of customer reviews",
+        "availability": "Stock status (In Stock, Out of Stock, etc.)",
+        "key_features": ["List of main product features/bullet points"],
+        "specifications": {
+            "brand": "Product brand",
+            "model": "Model number/name",
+            "dimensions": "Product dimensions",
+            "weight": "Product weight",
+            "color_options": ["Available colors/variants"]
+        },
+        "review_highlights": {
+            "positive_aspects": ["Commonly praised features"],
+            "negative_aspects": ["Common complaints or issues"]
+        },
+        "images": ["URLs of main product images"],
+        "similar_products": ["Titles of recommended/similar products"]
+    },
+    "task_template": "default",
+    "scraper_kwargs": {
+        "browser_type": "chromium",
+        "headless": false,
+        "viewport": {"width": 1920, "height": 1080},
+        "timeout": 30000,
+        "wait_for_load_state": "networkidle",
+        "extra_actions": [
+            "scroll_to_reviews",
+            "expand_product_details",
+            "wait_for_price_load"
+        ]
+    },
+    "retry_config": {
+        "max_retries": 3,
+        "retry_delay": 5,
+        "backoff_multiplier": 2
+    },
+    "output_options": {
+        "save_screenshots": true,
+        "save_html": true,
+        "include_metadata": true,
+        "timestamp": true
+    },
+    "notes": "This profile is optimized for Amazon product pages. Adjust the product_id in target_url for specific products. The scraper will handle dynamic price loading and review sections.",
+    "example_urls": [
+        "https://www.amazon.com/dp/B08N5WRWNW",
+        "https://www.amazon.com/dp/B0BSHF7LLL"
+    ]
+}

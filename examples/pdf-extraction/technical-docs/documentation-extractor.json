@@ -1,0 +1,88 @@
+{
+    "profile_name": "Technical Documentation Extractor",
+    "description": "Extracts structured information from technical documentation, API docs, and user manuals",
+    "scraper_type": "pdf",
+    "target_source": "local_file|url",
+    "task_prompt": "Extract technical documentation structure including sections, code examples, API specifications, installation instructions, and troubleshooting information. Preserve code formatting and technical details.",
+    "output_format": {
+        "document_info": {
+            "title": "Document title",
+            "version": "Documentation version",
+            "product": "Product or system name",
+            "last_updated": "Last update date",
+            "authors": ["Documentation authors"]
+        },
+        "table_of_contents": [
+            {
+                "section": "Section title",
+                "page_number": "Page reference",
+                "subsections": ["Subsection titles"]
+            }
+        ],
+        "sections": [
+            {
+                "section_title": "Section name",
+                "content_type": "overview|tutorial|reference|troubleshooting",
+                "content": "Section content",
+                "code_examples": [
+                    {
+                        "language": "Programming language",
+                        "code": "Code snippet",
+                        "description": "Code explanation"
+                    }
+                ],
+                "diagrams": [
+                    {
+                        "title": "Diagram title",
+                        "description": "Diagram description",
+                        "type": "flowchart|architecture|sequence"
+                    }
+                ]
+            }
+        ],
+        "api_reference": [
+            {
+                "endpoint": "API endpoint",
+                "method": "HTTP method",
+                "description": "Endpoint description",
+                "parameters": [
+                    {
+                        "name": "Parameter name",
+                        "type": "Data type",
+                        "required": true,
+                        "description": "Parameter description"
+                    }
+                ],
+                "response": "Response format description",
+                "example": "Usage example"
+            }
+        ],
+        "installation": {
+            "requirements": ["System requirements"],
+            "steps": ["Installation steps"],
+            "configuration": ["Configuration options"]
+        },
+        "troubleshooting": [
+            {
+                "issue": "Problem description",
+                "symptoms": ["Issue symptoms"],
+                "solution": "Resolution steps",
+                "related_errors": ["Error codes or messages"]
+            }
+        ]
+    },
+    "task_template": "pdf",
+    "scraper_kwargs": {
+        "pdf_processing": {
+            "preserve_code_formatting": true,
+            "extract_diagrams": true,
+            "section_hierarchy": true,
+            "code_detection": true
+        },
+        "technical_processing": {
+            "programming_language_detection": true,
+            "api_pattern_recognition": true,
+            "command_extraction": true
+        }
+    }
+}

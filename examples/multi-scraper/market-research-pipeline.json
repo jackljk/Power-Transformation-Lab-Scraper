@@ -1,0 +1,85 @@
+{
+    "profile_name": "Market Research Pipeline",
+    "description": "End-to-end market research combining competitor analysis, pricing data, and industry reports",
+    "workflow_type": "multi_scraper",
+    "scrapers": [
+        {
+            "step": 1,
+            "scraper_type": "bright_data",
+            "target": "competitor_websites",
+            "purpose": "Analyze competitor product offerings and pricing",
+            "config": {
+                "target_urls": [
+                    "https://competitor1.com/products",
+                    "https://competitor2.com/pricing",
+                    "https://competitor3.com/services"
+                ],
+                "task_prompt": "Extract product information, pricing, features, and positioning from competitor websites",
+                "batch_processing": true,
+                "output_format": {
+                    "competitors": [
+                        {
+                            "company_name": "Competitor name",
+                            "products": ["Product list"],
+                            "pricing_model": "Pricing structure",
+                            "key_features": ["Main features"],
+                            "target_market": "Target customer segment"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "step": 2,
+            "scraper_type": "pdf",
+            "target": "industry_reports",
+            "purpose": "Extract market size and trend data from industry reports",
+            "config": {
+                "target_sources": [
+                    "data/industry-report-2024.pdf",
+                    "data/market-trends-2024.pdf"
+                ],
+                "task_prompt": "Extract market size data, growth projections, industry trends, and competitive landscape information",
+                "output_format": {
+                    "market_size": {
+                        "current_value": "Current market value",
+                        "projected_growth": "Growth rate projections",
+                        "key_segments": ["Market segments"]
+                    },
+                    "trends": ["Major industry trends"],
+                    "challenges": ["Industry challenges"],
+                    "opportunities": ["Market opportunities"]
+                }
+            }
+        },
+        {
+            "step": 3,
+            "scraper_type": "browser_use",
+            "target": "pricing_databases",
+            "purpose": "Collect real-time pricing data from industry databases",
+            "config": {
+                "target_url": "https://industry-pricing-db.com",
+                "task_prompt": "Extract current pricing benchmarks, historical price trends, and regional variations",
+                "authentication_required": true,
+                "output_format": {
+                    "pricing_benchmarks": {
+                        "average_price": "Market average pricing",
+                        "price_ranges": "Min-max pricing ranges",
+                        "regional_variations": ["Price by region"]
+                    },
+                    "trends": "Pricing trend analysis"
+                }
+            }
+        }
+    ],
+    "data_consolidation": {
+        "analysis_type": "market_research",
+        "final_output": {
+            "executive_summary": "Market research executive summary",
+            "competitive_landscape": "Competitive analysis",
+            "market_opportunity": "Market size and opportunity assessment",
+            "pricing_strategy": "Recommended pricing approach",
+            "recommendations": "Strategic recommendations"
+        }
+    }
+}

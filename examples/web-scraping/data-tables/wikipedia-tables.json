@@ -1,0 +1,57 @@
+{
+    "profile_name": "Wikipedia Data Tables",
+    "description": "Extracts structured data tables from Wikipedia articles, particularly useful for statistical data, lists, and comparative information",
+    "scraper_type": "bright_data",
+    "target_url": "https://en.wikipedia.org/wiki/{article_title}",
+    "task_prompt": "Extract all data tables from the Wikipedia article, including statistical tables, comparison charts, timeline data, and structured lists. Preserve table headers, formatting, and maintain relationships between data points.",
+    "output_format": {
+        "article_title": "Wikipedia article title",
+        "tables": [
+            {
+                "table_index": 1,
+                "caption": "Table caption or title",
+                "headers": ["Column 1", "Column 2", "Column 3"],
+                "data": [
+                    ["Row 1 Col 1", "Row 1 Col 2", "Row 1 Col 3"],
+                    ["Row 2 Col 1", "Row 2 Col 2", "Row 2 Col 3"]
+                ],
+                "table_type": "data_table|infobox|comparison|timeline",
+                "section": "Article section where table appears"
+            }
+        ],
+        "infoboxes": [
+            {
+                "type": "Main infobox",
+                "data": {
+                    "field_name": "field_value"
+                }
+            }
+        ],
+        "lists": [
+            {
+                "section": "Section name",
+                "type": "ordered|unordered",
+                "items": ["List item 1", "List item 2"]
+            }
+        ],
+        "coordinates": "Geographic coordinates if present",
+        "categories": ["Article categories"]
+    },
+    "task_template": "tabular",
+    "scraper_kwargs": {
+        "proxy_type": "datacenter",
+        "javascript_rendering": false,
+        "timeout": 20,
+        "table_extraction": {
+            "include_infoboxes": true,
+            "include_navboxes": false,
+            "merge_cells": true,
+            "preserve_formatting": true
+        }
+    },
+    "post_processing": {
+        "clean_wikipedia_markup": true,
+        "convert_units": true,
+        "validate_numbers": true
+    }
+}

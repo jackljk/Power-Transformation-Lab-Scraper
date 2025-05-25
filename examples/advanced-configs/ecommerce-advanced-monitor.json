@@ -1,0 +1,89 @@
+{
+    "profile_name": "Advanced E-commerce Monitor",
+    "description": "Advanced configuration for monitoring e-commerce sites with custom headers, session management, and anti-detection measures",
+    "scraper_type": "browser_use",
+    "target_url": "https://shop.example.com/products/{category}",
+    "task_prompt": "Monitor product availability, pricing changes, and new product launches. Track inventory levels and competitor pricing.",
+    "output_format": {
+        "products": [
+            {
+                "sku": "Product SKU",
+                "name": "Product name",
+                "price": "Current price",
+                "previous_price": "Previous price if changed",
+                "availability": "In stock status",
+                "inventory_level": "Available quantity",
+                "last_updated": "Price/inventory update time",
+                "discount": "Current discount percentage",
+                "reviews": {
+                    "average_rating": "Average rating",
+                    "total_reviews": "Number of reviews",
+                    "recent_reviews": ["Latest review summaries"]
+                }
+            }
+        ],
+        "category_info": {
+            "total_products": "Products in category",
+            "price_range": "Min-max price range",
+            "trending_products": ["Popular products"]
+        }
+    },
+    "task_template": "default",
+    "scraper_kwargs": {
+        "browser_type": "chromium",
+        "headless": true,
+        "stealth_mode": true,
+        "viewport": {"width": 1920, "height": 1080},
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "extra_headers": {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate, br",
+            "DNT": "1",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1"
+        },
+        "proxy_config": {
+            "enabled": true,
+            "type": "residential",
+            "rotation": "per_request"
+        },
+        "session_management": {
+            "persist_cookies": true,
+            "cookie_file": "cookies/ecommerce_session.json",
+            "session_timeout": 1800
+        },
+        "anti_detection": {
+            "randomize_timing": true,
+            "human_like_delays": [1000, 3000],
+            "mouse_movements": true,
+            "scroll_simulation": true
+        },
+        "error_handling": {
+            "captcha_detection": true,
+            "rate_limit_detection": true,
+            "retry_on_block": true,
+            "fallback_strategies": ["change_proxy", "wait_and_retry"]
+        }
+    },
+    "monitoring": {
+        "enabled": true,
+        "schedule": "0 */6 * * *",
+        "change_detection": {
+            "price_changes": true,
+            "inventory_changes": true,
+            "new_products": true
+        },
+        "alerts": {
+            "price_drop_threshold": 10,
+            "out_of_stock_alert": true,
+            "new_product_alert": true
+        }
+    },
+    "data_persistence": {
+        "database": "sqlite",
+        "historical_tracking": true,
+        "price_history": true,
+        "trend_analysis": true
+    }
+}

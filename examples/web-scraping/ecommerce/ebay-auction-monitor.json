@@ -1,0 +1,61 @@
+{
+    "profile_name": "eBay Auction Monitor",
+    "description": "Monitors eBay auction listings for bidding information, seller details, and item specifications",
+    "scraper_type": "browser_use",
+    "target_url": "https://www.ebay.com/itm/{item_id}",
+    "task_prompt": "Extract auction details including current bid price, time remaining, bidding history, seller information, item condition, shipping details, and item specifications. Track competitive bidding information.",
+    "output_format": {
+        "item_title": "Full auction title",
+        "current_bid": "Current highest bid amount",
+        "buy_it_now_price": "Buy It Now price if available",
+        "time_remaining": "Auction end time/countdown",
+        "total_bids": "Number of bids placed",
+        "watchers": "Number of people watching",
+        "condition": "Item condition (New, Used, Refurbished, etc.)",
+        "seller_info": {
+            "username": "Seller username",
+            "feedback_score": "Seller feedback score",
+            "feedback_percentage": "Positive feedback percentage",
+            "location": "Seller location"
+        },
+        "shipping": {
+            "cost": "Shipping cost",
+            "method": "Shipping method",
+            "handling_time": "Estimated handling time"
+        },
+        "bidding_history": [
+            {
+                "bid_amount": "Bid amount",
+                "bidder": "Anonymous bidder ID",
+                "timestamp": "Bid time"
+            }
+        ],
+        "item_specifics": "Key item details and specifications",
+        "images": ["Item image URLs"],
+        "return_policy": "Return policy details"
+    },
+    "task_template": "default",
+    "scraper_kwargs": {
+        "browser_type": "chromium",
+        "headless": false,
+        "viewport": {"width": 1366, "height": 768},
+        "timeout": 25000,
+        "wait_for_load_state": "domcontentloaded",
+        "extra_actions": [
+            "click_show_bid_history",
+            "expand_item_specifics",
+            "check_seller_details"
+        ]
+    },
+    "retry_config": {
+        "max_retries": 2,
+        "retry_delay": 3,
+        "backoff_multiplier": 1.5
+    },
+    "output_options": {
+        "save_screenshots": true,
+        "save_html": false,
+        "include_metadata": true,
+        "timestamp": true
+    }
+}
