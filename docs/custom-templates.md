@@ -38,6 +38,10 @@ Templates support dynamic placeholders that are replaced at runtime:
 - `{no_pages}`: Instructions for single vs multi-page extraction
 - `{filters}`: Any filtering criteria
 
+Which are used for different scraping scenarios more customization.dynamic placeholder is a **WIP** 
+
+**See Templates to get a better understanding**
+
 ## Built-in Templates
 
 ### 1. Default Template
@@ -75,7 +79,7 @@ Templates support dynamic placeholders that are replaced at runtime:
 ```
 
 **Use Case**: Extracting data from tables, lists, or structured layouts  
-**Best For**: Financial data, product catalogs, directory listings
+**Best For**: Structured data in tabular format already
 
 ### 3. PDF Default Template
 ```python
@@ -91,7 +95,7 @@ Templates support dynamic placeholders that are replaced at runtime:
 ```
 
 **Use Case**: PDF document processing  
-**Best For**: Academic papers, reports, documentation
+**Best For**: Academic papers, reports, documentation -- PDFS
 
 ## Creating Custom Templates
 
@@ -139,9 +143,25 @@ content_structure:
   # Define expected output structure
 ```
 
-## Advanced Template Examples
 
-### News Article Extraction Template
+## Tailoring Templates for Specific Use Cases
+
+Keep in mind that the default templates work most of the time, but crafting templates for your specific needs can significantly improve extraction accuracy. Custom templates allow you to:
+
+1. **Optimize for domain-specific data** - Financial, medical, or technical content often benefits from specialized instructions
+2. **Handle unusual data formats** - When dealing with non-standard layouts or mixed content types
+3. **Increase extraction precision** - By providing explicit guidance on what data to prioritize
+4. **Improve consistency** - By standardizing how edge cases and ambiguities are handled
+
+Consider creating custom templates when dealing with:
+- Complex nested data structures
+- Industry-specific terminology
+- Multiple data formats on a single page
+- Strict compliance or accuracy requirements
+
+The time invested in template customization typically pays off through higher quality data and fewer extraction errors.
+
+### News Article Extraction Template Example
 ```python
 "news_extraction": {
     "task_format": """
@@ -167,7 +187,7 @@ content_structure:
 }
 ```
 
-### E-commerce Product Template
+### E-commerce Product Template Example
 ```python
 "ecommerce_extraction": {
     "task_format": """
@@ -198,7 +218,7 @@ content_structure:
 }
 ```
 
-### Academic Research Template
+### Academic Research Template Example
 ```python
 "academic_research": {
     "task_format": """
@@ -231,7 +251,7 @@ content_structure:
 }
 ```
 
-### Financial Data Template
+### Financial Data Template Example
 ```python
 "financial_extraction": {
     "task_format": """
@@ -265,6 +285,24 @@ content_structure:
 }
 ```
 
+### Multi-Language Support Template Example
+```python
+"multilingual_template": {
+    "task_format": """
+        Extract information in the source language: "{prompt}"
+        
+        Language Handling:
+        - Preserve original language for extracted text
+        - Translate field names to English for consistency
+        - Note the detected language in metadata
+        
+        Requirements:
+        - Do not translate content unless specifically requested
+        - Maintain cultural context and meaning
+    """
+}
+```
+
 ## Template Best Practices
 
 ### 1. Clear Instructions
@@ -282,122 +320,14 @@ content_structure:
 - Handle missing data consistently
 - Preserve important formatting
 
+For output see 
+
 ### 4. Use Case Optimization
 - Tailor instructions to specific data types
 - Include domain-specific guidance
 - Address common extraction challenges
 
-## Dynamic Template Configuration
 
-### Using Template Variables
-
-You can make templates more flexible by using variables:
-
-```python
-"flexible_extraction": {
-    "task_format": """
-        Extract {data_category} information from {website}: "{prompt}"
-        
-        Focus Areas:
-        {focus_areas}
-        
-        Quality Requirements:
-        1. Extract only factual information from the page
-        2. {accuracy_level}
-        3. Format according to provided structure
-        
-        {additional_instructions}
-    """
-}
-```
-
-### Profile-Level Template Customization
-
-In your profile, you can provide template-specific context:
-
-```yaml
-scraper:
-  prompt:
-    task_template: "flexible_extraction"
-    text: "Extract product information"
-    
-  additional_context:
-    format: "json"
-    value: |
-      {
-        "data_category": "product",
-        "focus_areas": "pricing, availability, features",
-        "accuracy_level": "High precision required for pricing data",
-        "additional_instructions": "Include variant information if available"
-      }
-```
-
-## Testing and Validation
-
-### Template Testing Checklist
-
-1. **Clarity Test**: Is the template clear and unambiguous?
-2. **Accuracy Test**: Does it produce factual, verifiable results?
-3. **Completeness Test**: Does it extract all required information?
-4. **Consistency Test**: Are results consistent across similar inputs?
-5. **Error Handling Test**: How does it handle missing or incomplete data?
-
-### A/B Testing Templates
-
-Create multiple versions of a template and compare results:
-
-```python
-"template_v1": {
-    "task_format": "Version 1 instructions..."
-},
-"template_v2": {
-    "task_format": "Version 2 instructions..."
-}
-```
-
-### Performance Monitoring
-
-Track template performance metrics:
-- Extraction accuracy
-- Completion rate
-- Error frequency
-- Processing time
-
-## Template Maintenance
-
-### Regular Reviews
-- Monitor extraction quality
-- Update based on user feedback
-- Adapt to website changes
-- Optimize for new use cases
-
-### Version Control
-- Document template changes
-- Maintain backward compatibility
-- Test before deploying updates
-
-### Community Templates
-Consider contributing useful templates back to the project for others to use.
-
-## Integration with Scrapers
-
-### Browser-Use Scraper
-Templates for browser automation should account for:
-- Dynamic content loading
-- Interactive elements
-- Multi-page navigation
-
-### Bright Data MCP Scraper
-Templates for proxy scraping should:
-- Work with static content
-- Handle large-scale extraction
-- Optimize for speed
-
-### PDF Scraper
-PDF templates should:
-- Handle document structure
-- Work with vector-based retrieval
-- Account for text extraction limitations
 
 ## Troubleshooting Templates
 
@@ -416,45 +346,8 @@ PDF templates should:
 4. Iterate on template instructions
 5. Validate with multiple test cases
 
-## Advanced Features
 
-### Conditional Logic
-```python
-"conditional_template": {
-    "task_format": """
-        Extract information about: "{prompt}"
-        
-        If the page contains tabular data:
-        - Extract all rows and columns
-        - Preserve data relationships
-        
-        If the page contains article content:
-        - Focus on main content area
-        - Extract title, author, date
-        
-        If neither format is detected:
-        - Extract relevant text snippets
-        - Provide context for each snippet
-    """
-}
-```
-
-### Multi-Language Support
-```python
-"multilingual_template": {
-    "task_format": """
-        Extract information in the source language: "{prompt}"
-        
-        Language Handling:
-        - Preserve original language for extracted text
-        - Translate field names to English for consistency
-        - Note the detected language in metadata
-        
-        Requirements:
-        - Do not translate content unless specifically requested
-        - Maintain cultural context and meaning
-    """
-}
-```
 
 This comprehensive guide should help you create effective custom templates for your specific extraction needs. Remember to test thoroughly and iterate based on real-world results.
+
+Also always remember that AI can be incorrect and be sure to perform some simple validation to ensure high data quality.

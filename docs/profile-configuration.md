@@ -60,7 +60,7 @@ content_structure:             # Optional but recommended
 - **Formats**:
   - Single file: `"data/document.pdf"`
   - Multiple files: `["data/doc1.pdf", "data/doc2.pdf"]`
-- **Notes**: Paths are relative to project root
+- **Notes**: Paths are relative to project root i.e location of `main.py` file.
 
 ### Prompt Configuration
 
@@ -126,15 +126,13 @@ content_structure:             # Optional but recommended
 #### `content_structure` (object)
 - **Description**: Defines the expected structure of extracted data
 - **Format**: Nested object with data types
-- **Benefits**: Ensures consistent output format, improves extraction accuracy
+- **Benefits**: Ensures consistent output format, in Valid JSON (structured) format
 
 #### Data Types
 - `str`: String/text data
 - `int`: Integer numbers
 - `float`: Decimal numbers
 - `bool`: Boolean (true/false)
-- `list`: Array of values
-- `dict`: Nested object
 
 #### Example Structures
 
@@ -148,7 +146,7 @@ content_structure:
     description: str
 ```
 
-##### Complex Nested Data
+<!-- ##### Complex Nested Data TODO
 ```yaml
 content_structure:
   Articles:
@@ -161,29 +159,13 @@ content_structure:
       word_count: int
       reading_time: int
       category: str
-```
+``` -->
 
-##### Tabular Data
-```yaml
-content_structure:
-  Companies:
-    company_name: str
-    revenue: float
-    employees: int
-    founded_year: int
-    industry: str
-    headquarters: str
-```
+
 
 ## Scraper-Specific Configurations
 
 ### Browser-Use Scraper
-
-#### Optimal Use Cases
-- Interactive websites requiring clicks/scrolls
-- JavaScript-heavy applications
-- Sites with dynamic content loading
-- Complex navigation flows
 
 #### Configuration Tips
 ```yaml
@@ -193,19 +175,11 @@ scraper:
   
   initial_actions:
     - scroll_down: 400          # Load dynamic content
-    - wait: 3000                # Wait for content to load
     - click_by_xpath: "//button[@class='load-more']"
-    - wait: 2000
     - scroll_down: 400
 ```
 
 ### Bright Data MCP Scraper
-
-#### Optimal Use Cases
-- Large-scale data collection
-- Sites with anti-bot protection
-- Fast, efficient scraping
-- Public data repositories
 
 #### Configuration Tips
 ```yaml
@@ -219,12 +193,6 @@ scraper:
 ```
 
 ### PDF Scraper
-
-#### Optimal Use Cases
-- Academic papers and research documents
-- Financial reports and statements
-- Technical documentation
-- Multi-page document analysis
 
 #### Configuration Tips
 ```yaml
@@ -330,35 +298,21 @@ Before running, validate your profile:
 
 ### Testing Strategies
 1. **Start Simple**: Begin with basic extraction, then add complexity
-2. **Use Debug Mode**: Enable debug logging for detailed execution traces
-3. **Iterative Refinement**: Adjust prompts based on initial results
-4. **Content Structure Validation**: Ensure output matches expected format
+2. **Iterative Refinement**: Adjust prompts based on initial results
+3. **Content Structure Validation**: Ensure output matches expected format
 
 ### Common Issues and Solutions
 
 #### Issue: Inconsistent Output Format
 **Solution**: Define detailed `content_structure` with specific field types
 
-#### Issue: Missing Data in Results
-**Solution**: 
-- Refine the extraction prompt
-- Add relevant context information
-- Adjust initial actions for dynamic content
 
-#### Issue: PDF Extraction Errors
-**Solution**:
-- Verify PDF is text-based (not scanned image)
-- Check file permissions and paths
-- Use more specific prompts for complex documents
 
 ## Best Practices
 
 1. **Clear Prompts**: Write specific, actionable extraction prompts
 2. **Structured Output**: Always define `content_structure` for consistent results
 3. **Context Information**: Provide relevant context to improve extraction accuracy
-4. **Progressive Actions**: For browser automation, build up actions step by step
-5. **Error Handling**: Include fallback strategies in your workflow
-6. **Documentation**: Comment complex configurations for future reference
 
 ## Advanced Configuration
 
@@ -366,9 +320,7 @@ Before running, validate your profile:
 ```yaml
 initial_actions:
   - scroll_down: 500
-  - wait: 3000              # Wait for AJAX content
   - click_by_xpath: "//button[contains(@class, 'load-more')]"
-  - wait: 2000
   - scroll_down: 500
 ```
 
@@ -381,7 +333,7 @@ initial_actions:
   - go_to_url: "https://example.com/page3"
 ```
 
-### Complex Data Structures
+### Complex Data Structures (WIP)
 ```yaml
 content_structure:
   Companies:

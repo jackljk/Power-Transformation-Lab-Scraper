@@ -312,14 +312,13 @@ For detailed troubleshooting information, see [`docs/troubleshooting.md`](docs/t
 
 ### Quick Fixes
 
-- **Windows asyncio errors**: Automatically handled in current version
 - **Playwright issues**: Run `playwright install chromium`
 - **API key errors**: Check `app/config/secrets.yaml`
 - **PDF extraction issues**: Ensure PDFs are text-based, not scanned images
 - **Memory issues**: Enable headless mode and reduce browser steps
 
-### Debug Mode
-
+### Debug Mode (WIP)
+<!-- 
 Enable detailed logging for troubleshooting:
 
 ```powershell
@@ -331,7 +330,11 @@ Debug mode provides:
 - Detailed step-by-step logs
 - Screenshot captures at each step
 - Network request/response logs
-- Performance timing information
+- Performance timing information -->
+
+### Known Bugs
+- **Windows asyncio errors**
+
 
 ### Getting Help
 
@@ -419,33 +422,9 @@ Copy-Item "examples\web-scraping\ecommerce\amazon-product-details.json" "app\con
 python main.py --profile my-scraper --url "https://example.com"
 ```
 
-## Contributing
-
-We welcome contributions! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes with appropriate tests
-4. Update documentation as needed
-5. Submit a pull request with a clear description of changes
-
-### Development Setup
-
-For development, install additional dependencies:
-
-```powershell
-pip install -r requirements-dev.txt
-```
-
-Run tests:
-
-```powershell
-pytest tests/
-```
 
 ## License
 
-[Specify your license here]
 
 ## Changelog
 

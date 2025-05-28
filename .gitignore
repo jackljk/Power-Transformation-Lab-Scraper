@@ -4,6 +4,15 @@ app/config/secrets.yaml
 # ignore the /notebooks folder
 notebooks/
 
+# temporary ignore example/
+examples/*
+
+# any folder called testing
+testing/
+
+# all files in /data that is not the README.md file
+data/*
+!data/README.md
 
 # VSCode files
 .vscode/
