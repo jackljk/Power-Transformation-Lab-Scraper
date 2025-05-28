@@ -422,6 +422,11 @@ Copy-Item "examples\web-scraping\ecommerce\amazon-product-details.json" "app\con
 python main.py --profile my-scraper --url "https://example.com"
 ```
 
+## Roadmap
+- [ ] **Mutli-pdf Scraper**: Support for scraping multiple PDFs in a single run
+- [ ] **Mutli-scraper support**: Allow using multiple scraper types in a single profile
+- [ ] **Improved Debug Mode**: Enhanced logging and debugging capabilities
+
 
 ## License
 
