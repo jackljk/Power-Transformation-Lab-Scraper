@@ -8,7 +8,7 @@ scraper:
   # URL to scrape
   url: null
   # filepath to pdf
-  filepath: "/Users/jack/Documents/Projects/Power Lab\ Power-Transformation-Lab-Scraper/data/Energy Validation.pdf"
+  filepath: "C:/Users/limja/Documents/Research/Power\ Lab/Power-Transformation-Lab-Scraper/data//energy_validation.pdf"
   
   # Information to extract
   prompt: 

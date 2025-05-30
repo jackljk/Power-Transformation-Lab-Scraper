@@ -2,7 +2,7 @@
 # --------------------------
 
 # Profile to use (loads complete configuration from profiles directory)
-profile: "sports_example"
+profile: "structured_example"
 
 # Output path for the scraper (FULL PATH)
 output_path: "results"
