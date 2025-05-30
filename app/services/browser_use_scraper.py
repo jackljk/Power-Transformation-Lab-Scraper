@@ -10,7 +10,7 @@ from browser_use import Agent, Controller, ActionResult
 
 from app.models.tasks_models import Task
 from app.models.llm_models import get_llm_instance
-from app.utils.config.browser_use import define_browser_use_context_config
+from app.utils.config.browser_use import define_browser_use_session
 from app.utils.config.browser_use_agent import RUN_MAX_STEPS, PLANNER_INTERVAL, USE_PLANNER_MODEL
 from app.services.hooks.browser_use_scraper_hooks import save_page_content
 
@@ -28,7 +28,7 @@ class WebScraper:
         additional_context: Optional[Dict[str, Any]] = None,
         task_template: str = "default",
         initial_actions: Optional[List[Dict[str, Any]]] = None,
-        output_format: Union[BaseModel] = None
+        output_format: Optional[BaseModel] = None,  # Pydantic model for output format
     ):
         """
         Initialize the WebScraper.
@@ -67,7 +67,7 @@ class WebScraper:
         self.planner_llm = get_llm_instance(planner=True) if USE_PLANNER_MODEL else None
 
         # create a browser-use browser config object
-        self.browser_context, self.browser_config = define_browser_use_context_config()
+        self.browser_session = define_browser_use_session()
 
         # Create a controller with our output model
         self.controller = self._define_controller()
@@ -85,10 +85,8 @@ class WebScraper:
             # Additional context/initial actions
             message_context=additional_context_str,
             initial_actions=self.initial_actions,
-            # browser-use config
-            browser_context=self.browser_context,
-            # extra settings
-            use_vision=True
+            # browser-use session settings
+            browser_session=self.browser_session,
         )
 
     async def scrape(self) -> Dict[str, Any]:
@@ -99,7 +97,8 @@ class WebScraper:
             A structured result containing the extracted information with citations
         """
         # Run the agent to collect information
-        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_start=save_page_content)
+        history = await self.agent.run(max_steps=RUN_MAX_STEPS)
+                                    #    , on_step_start=save_page_content)
                                     #    , on_step_end=save_page_content)
 
         # Get the final result using the browser-use Controller
