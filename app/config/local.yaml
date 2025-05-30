@@ -2,10 +2,10 @@
 # --------------------------
 
 # Profile to use (loads complete configuration from profiles directory)
-profile: "unstructured_testing"
+profile: "sports_example"
 
 # Output path for the scraper (FULL PATH)
-output_path: "C:/Users/limja/Documents/Research/Power Lab/Power-Transformation-Lab-Scraper/results"
+output_path: "results"
 
 scraper_type: 'browser_use' # options: bright_data_mcp, browser-use
 

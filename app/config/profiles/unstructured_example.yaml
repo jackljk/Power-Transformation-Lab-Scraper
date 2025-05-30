@@ -26,6 +26,7 @@ scraper:
       - Make sure to translate all the extracted information into English.
       - There are 3 pages, with navigations located at the bottom of the page, 
         so make sure to scrape all 3 pages.
+      - If there is no information available for a field, use NANs
 
   
   # Additional context to help with scraping

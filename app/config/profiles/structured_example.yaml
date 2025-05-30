@@ -2,42 +2,49 @@
 # --------------------------
 
 # name for profile (For nicer identification in logs/results) Keep lowercase and use underscores/dashes
-name: "pdf_example"
+name: "structured_example"
 
 scraper:
   # URL to scrape
-  url: null
-  # filepath to pdf
-  filepath: "/Users/jack/Documents/Projects/Power Lab\ Power-Transformation-Lab-Scraper/data/Energy Validation.pdf"
+  url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
   
   # Information to extract
   prompt: 
-    task_template: "pdf_default"
+    task_template: "default"
     text: |-
-      Extract the data about " publicly available reanalysis datasets and the parameters most relevant to wind power synthesis" from the table in the PDF
+      Extract the list of all nominees for Academy Award best picture for films produced in 2015 from the Wikipedia page.
+      
+      For each film, extract the following information:
+      - Film Title
+      - Number of Nominations
+      - Number of Awards Won
+      - Index (to maintain order)
+      - Best Picture Award Status (True if the film won the best picture award, False otherwise)
+      - Director of each movie
 
+      The directors information is not available in the table, but clicking on the hyperlink of each film will lead to the film's page where the director's name can be found.
+
+      
   
   # Additional context to help with scraping
   additional_context:
     format: "text"
     value: |-
-      The pdf is parsed as a Markdown file before being passed to the model.
-      If encountering a character, uses utf-8 encoding to type the character.
+
 
   initial_actions:
-    # - go_to_url: "https://en.wikipedia.org/wiki/Apple"
-    # - scroll_down: 4000
-    # - go_to_url: "https://en.wikipedia.org/wiki/List_of_Academy_Award%E2%80%93winning_films"
+    - scroll_down: 4000
+
 
 content_structure:
-  Table-1:
-    Institution/Model: str
-    Released: str
-    Coverage: str
-    Spatial_Resolution: str
-    Time_Resolution: str
-    Wind_speed_heights: str
-    Other_model_heights: str
+  Film:
+    title: str
+    nominations: int
+    awards_won: int
+    index: int
+    best_picture: bool
+    director: str
+
 
 ########################################################################
 # Optional: Specify the content structure for the scraper to use

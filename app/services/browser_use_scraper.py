@@ -99,7 +99,8 @@ class WebScraper:
             A structured result containing the extracted information with citations
         """
         # Run the agent to collect information
-        history = await self.agent.run(max_steps=RUN_MAX_STEPS, on_step_end=save_page_content)
+        history = await self.agent.run(max_steps=RUN_MAX_STEPS)
+                                    #    , on_step_end=save_page_content)
 
         # Get the final result using the browser-use Controller
         result = history.final_result()
