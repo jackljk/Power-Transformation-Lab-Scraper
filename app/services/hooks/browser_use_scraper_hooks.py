@@ -1,7 +1,7 @@
 import json
 from browser_use import Agent, ActionResult
 from browser_use.agent.views import AgentHistoryList
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 import os
 import logging
 import base64
@@ -36,13 +36,17 @@ async def save_page_content(agent: Agent) -> None:
     results_path = os.path.join(results_env, "local")
     trace_path = os.path.join(results_env, "trace")
 
+    # get browser session and page
+    browser_session = agent.browser_session
+    page = await browser_session.get_current_page()
+
     # get the current url and the number of urls scraped
-    urls = agent.state.history.urls()
-    current_url, step = urls[-1], len(urls)
+    current_url = page.url
+    step = len(agent.state.history.urls()) + 1
 
     # Get the data from the trace file
     trace_json, updated_trace_json = _initialize_trace_logging(
-        history, trace_path, current_url, urls, step
+        history, trace_path, current_url, step
     )
     webpage_number = updated_trace_json["url_to_webpage_number_mapper"][
         current_url
@@ -58,11 +62,9 @@ async def save_page_content(agent: Agent) -> None:
         return
 
     # Capture the cuurent page content
-    browser_context = agent.browser_context
-    website_html = await browser_context.get_page_html()
-    website_screenshot = await browser_context.take_screenshot()
+    # website_html = await browser_session.get_page_html()
+    website_screenshot = await browser_session.take_screenshot()
     website_screenshot = base64.b64decode(website_screenshot)
-    page = await browser_context.get_current_page()
 
     webpage_file_path = False  # Initialize the webpage file path to False
     if not trace_json or current_url not in trace_json["urls"]:
@@ -147,7 +149,6 @@ def _initialize_trace_logging(
     history: AgentHistoryList,
     trace_path: str,
     current_url: str,
-    urls: List[str],
     step: int,
 ) -> Tuple[dict, dict]:
     """Handler to update file that traces the certain scraper actions
@@ -193,7 +194,7 @@ def _initialize_trace_logging(
                 )
 
         # Update the data with new URLs and current URL
-        data["urls"] = list(set(urls))
+        data["urls"].append(current_url) if "urls" in data else [current_url]
 
         # Update the history during the current step
         if "history" not in data:
@@ -219,7 +220,7 @@ def _initialize_trace_logging(
 
 
 def finalize_trace_logging(
-    trace_path: str, step: int, screenshot_path: str, webpage_file_path: str
+    trace_path: str, step: int, screenshot_path: , webpage_file_path: str
 ) -> None:
     """Handler to update file that traces the certain scraper actions
 
