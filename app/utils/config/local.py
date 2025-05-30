@@ -116,23 +116,19 @@ def parse_local_config(available_templates: list) -> dict:
     
     if not url and scraper_type in ["browser_use", "bright_data_mcp"]:
         logger.error("URL is required in profile configuration (profile.scraper.url)")
-        return {}
     
     if not filepath and 'pdf' in scraper_type:
         logger.error("Filepath is required in profile configuration (profile.scraper.filepath)")
-        return {}
 
     if not prompt:
         logger.error(
             "Prompt is required in profile configuration (profile.scraper.prompt)"
         )
-        return {}
     
     if not scraper_type:
         logger.error(
             "Scraper type is required in profile configuration (profile.scraper.scraper_type)"
         )
-        return {}
     
     # parse the prompt
     task_template = get_config("prompt.task_template")
