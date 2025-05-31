@@ -100,7 +100,7 @@ def define_browser_use_session():
         allowed_domains=None,
         headless=BROWSERUSE_HEADLESS,
         disable_security=True,
-        user_data_dir=results_env,
+        user_data_dir='~/.config/browseruse/profiles/default',
         save_recording_path= browser_use_recording_path,
         trace_path=browser_use_trace_path,
     )

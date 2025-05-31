@@ -220,7 +220,7 @@ def _initialize_trace_logging(
 
 
 def finalize_trace_logging(
-    trace_path: str, step: int, screenshot_path: , webpage_file_path: str
+    trace_path: str, step: int, screenshot_path: str, webpage_file_path: str
 ) -> None:
     """Handler to update file that traces the certain scraper actions
 

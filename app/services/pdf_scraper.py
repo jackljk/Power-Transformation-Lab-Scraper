@@ -27,8 +27,8 @@ class PDFScraper:
 
     def __init__(
         self,
-        pdf_paths: Union[str, List[str]],
-        prompt: str,
+        pdf_paths: Union[str, List[str], None] = None,
+        prompt: Optional[str] = None,
         task_template: str = "default_pdf",
         additional_context: Optional[Dict[str, Any]] = None,
         output_format: Optional[Dict[str, Any]] = None,
@@ -47,10 +47,10 @@ class PDFScraper:
             chunk_size: Size of text chunks for processing
             chunk_overlap: Overlap between text chunks
         """
-        assert pdf_paths, "PDF file path(s) are required"
-        assert prompt, "Prompt is required"
         # Convert single path to list for consistent handling
-        if isinstance(pdf_paths, str):
+        if pdf_paths is None:
+            pdf_paths = []
+        elif isinstance(pdf_paths, str):
             pdf_paths = [pdf_paths]
             
         # Validate that all PDF files exist

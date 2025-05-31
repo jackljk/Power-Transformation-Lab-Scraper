@@ -34,7 +34,7 @@ class Task(BaseModel):
                 if prompt['filters'] is None:
                     filter = ""
                 else:
-                    filter = f"5. If filters are available, apply {prompt["filters"]} before extraction"
+                    filter = f"5. If filters are available, apply {prompt['filters']} before extraction"
                 
                 # handle no_pages
                 if prompt["no_pages"] == "all":

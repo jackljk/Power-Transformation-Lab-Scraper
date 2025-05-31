@@ -23,7 +23,7 @@ class WebScraper:
 
     def __init__(
         self,
-        url: str,
+        url: Optional[str],
         prompt: Union[str, Dict[str, Any]],
         additional_context: Optional[Dict[str, Any]] = None,
         task_template: str = "default",
@@ -140,7 +140,6 @@ class WebScraper:
 
             # Convert to the application's expected ScrapedResult format
             # processed_result = self._convert_to_scraped_result(structured_output)
-            await self.browser_context.close()
 
             return result_dict
         else:
@@ -186,12 +185,6 @@ class WebScraper:
         empty_result["task_template"] = self.task_template
 
         return empty_result
-    async def __aenter__(self):
-        return self
-        
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.browser_context:
-            await self.browser_context.close()
             
             
     def _define_controller(self):
@@ -199,7 +192,7 @@ class WebScraper:
         Define the controller for the browser-use agent.
         """
         # Create a controller with our output model
-        controller = Controller(output_model=self.output_format)
+        controller = Controller(output_model=self.output_format) # type: ignore
 
         ######################################################
         # Define custom functions that the agent can call
@@ -249,12 +242,12 @@ class WebScraper:
                 prompt=prompt,
                 task_template="default",
                 additional_context=None,
-                output_format=self.output_format
+                output_format=self.output_format # type: ignore
             )
             result = await pdf_scraper.scrape()
             logger.info(f"Parsed PDF result: {result}")
             msg = "Parsed PDF extracted data result from PDF Scraper has results based on the prompt provided. Ensure the extracted content is relevant to the task"
-            if result.isinstance(str):
+            if result.isinstance(str): # type: ignore
                 msg = msg + f"\n {result}"
             else:
                 result = json.dumps(result, indent=2)

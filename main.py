@@ -65,8 +65,8 @@ async def scrape_url(
                 prompt=prompt,
                 additional_context=additional_context,
                 task_template=task_template,
-                initial_actions=initial_actions,
-                output_format=build_output_model(content_structure),
+                initial_actions=initial_actions, # type: ignore
+                output_format=build_output_model(content_structure), # type: ignore
             )
             result = await scraper.scrape()
             return result
@@ -162,34 +162,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    # try:
-    #     # Use proper event loop handling for Windows
-    #     if sys.platform == 'win32':
-    #         # Use selector event loop to avoid ProactorEventLoop issues
-    #         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        
-    #     loop = asyncio.new_event_loop()
-    #     asyncio.set_event_loop(loop)
-        
-    #     try:
-    #         loop.run_until_complete(main())
-    #     finally:
-    #         # Properly close the event loop
-    #         pending_tasks = asyncio.all_tasks(loop)
-    #         for task in pending_tasks:
-    #             task.cancel()
-                
-    #         # Wait for all tasks to be cancelled
-    #         if pending_tasks:
-    #             loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
-            
-    #         # Close the loop properly
-    #         loop.run_until_complete(loop.shutdown_asyncgens())
-    #         loop.close()
-            
-    # except KeyboardInterrupt:
-    #     logger.info("Scraping task was cancelled by user.")
-    # except Exception as e:
-    #     logger.error(f"An error occurred: {str(e)}")
 
     
